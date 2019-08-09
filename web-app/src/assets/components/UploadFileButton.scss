@@ -1,0 +1,50 @@
+.uploadbutton {
+    margin: 2vh;
+    width: 50vh;
+    height: 8vh;
+    border-radius: 25px;
+    display: flex;
+    border-style: solid;
+    border-color: rgb(13, 32, 58);
+    background-color: transparent;
+    border-width: medium;
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: relative;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row;
+    cursor: pointer;
+    & .uploadIcon {
+        transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+        margin: 0vh 0vh 0vh 2vh;
+    }
+    & .uploadText {
+        transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+        margin: 0vh 5vh 0vh 0vh;
+        font-size: 3vh;
+    }
+}
+.uploadbutton:hover {
+    border-width: 0;
+    background-color: rgba(64, 120, 192, 0.39);
+}
+.uploadbutton:active {
+    border-width: 0;
+    width: 50vh;
+    background-color: rgba(64, 120, 192, 0.39);
+}
+.uploadbutton:focus-within {
+    border-width: 0;
+    width: 50vh;
+    height: 8vh;
+    outline: none;
+    
+    background-color: rgba(64, 119, 192, 0.39);
+      
+    .label {
+        color: rgb(3, 41, 90);
+        width: 4vh;
+        margin: 0vh 0vh 0vh -14vh;
+        font-size: 1.5vh;
+    }
+}

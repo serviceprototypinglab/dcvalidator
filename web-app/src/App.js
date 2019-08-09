@@ -1,26 +1,29 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import GithubButton from './assets/components/GithubButton';
+import UploadFileButton from './assets/components/UploadFileButton';
+
+import './App.scss';
 
 function App() {
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      
+      <header className="App-logo">
+      <img
+            alt="..."
+            src={require("./assets/img/brand/SPLab.svg")}
+            className='SPLabLogo'
+          />
       </header>
+      
+      <GithubButton />
+      <UploadFileButton />
+      
+
     </div>
   );
 }
+
 
 export default App;
