@@ -1,21 +1,27 @@
 import React, {useState} from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import FileUploder from './FileUploder';
+import { ReactComponent as UploadFileIcon } from '../img/icons/common/folder_open.svg';
+
 import './UploadFileButton.scss';
 
 
-const emails = ['username@gmail.com', 'user02@gmail.com'];
-
 
 function SimpleDialog(props) {
-  const { onClose, selectedValue, open } = props;
+  const { onClose, open } = props;
 
   function handleClose() {
-    onClose(selectedValue);
+    onClose();
   }
 
   return (
-    <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+    <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open} maxWidth={false} PaperProps={{style:{
+      borderRadius: '1.5vh',
+      padding: '3vh 3vh 0 3vh',
+    }}} 
+    onEscapeKeyDown={handleClose}
+    transitionDuration={500}
+    >
       <FileUploder />
     </Dialog>
   );
@@ -26,37 +32,25 @@ function SimpleDialog(props) {
 
 
 export default function UploadFileButton(props) {
-  const [stat, setStat] = useState(true);
-  const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = useState(emails[1]);
+  const [open, setOpen] = useState(false);
   function handleClickOpen() {
     setOpen(true);
   }
 
-  const handleClose = value => {
+  const handleClose = () => {
     setOpen(false);
-    setSelectedValue(value);
   };
-
-
-  function handleChangeFocus() {
-    setStat(false)
-  }
 
   return (
      
     <>
-      <button className="uploadbutton" style={props.style} onFocus={handleChangeFocus} onBlur={() => setStat(true)} onClick={handleClickOpen}>
-          <img
-            alt="..."
-            src={require("../img/icons/common/folder_open.svg")}
-            className='uploadIcon'
-          />
-            <ul className='uploadText'>
+      <button className="uploadFileButton" style={props.style}  onClick={handleClickOpen}>
+          <UploadFileIcon className='uploadFileIcon' />
+            <ul className='uploadFileText'>
               Upload Docker-compose
             </ul>
       </button>
-      <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
+      <SimpleDialog open={open} onClose={handleClose} />
     </>
     
   

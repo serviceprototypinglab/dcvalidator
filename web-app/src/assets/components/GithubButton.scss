@@ -1,4 +1,4 @@
-.button {
+.githubButton {
     margin: 2vh;
     width: 50vh;
     height: 8vh;
@@ -22,30 +22,38 @@
         transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
         margin: 0vh 3vh 0vh 2vh;
     }
+    
     & .label {
         transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
         margin: 0vh 0vh 0vh -8vh;
         font-size: 3vh;
     }
+    & .searchIcon {
+        transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+        margin: 0vh 0vh 0vh 0vh;
+        height: 0vh;
+        width: 0vh;
+    }
 }
-.button:hover {
+.githubButton:hover {
     border-width: 0;
     background-color: rgba(64, 120, 192, 0.39);
 }
-.button:active {
+.githubButton:active {
     border-width: 0;
     width: 100vh;
     background-color: rgba(64, 120, 192, 0.39);
 }
-.button:focus-within {
+.githubButton:focus-within {
     border-width: 0;
     width: 100vh;
     height: 8vh;
     outline: none;
-    
+    cursor: default;
+
     background-color: rgba(64, 119, 192, 0.39);
     .textInput{
-        width: 75%;
+        width: 65%;
         display: flex;
         cursor: text;
     }   
@@ -54,5 +62,16 @@
         width: 4vh;
         margin: 0vh 0vh 0vh -14vh;
         font-size: 1.5vh;
+    }
+    & .searchIcon {
+        transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+        margin: 0vh 2vh 0vh 0vh;
+        height: 3vh;
+        width: 3vh;
+        
+    }
+    & .searchIcon:hover{
+        fill: rgb(64, 119, 192);
+        cursor: pointer;
     }
 }

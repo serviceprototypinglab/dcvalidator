@@ -1,29 +1,25 @@
-import React, {useState} from 'react';
-import './GithubButton.scss';
+import React from 'react';
 import InputBase from '@material-ui/core/InputBase';
+import { ReactComponent as SearchIcon } from '../img/icons/common/search.svg';
+import { ReactComponent as GithubIcon } from '../img/icons/common/github.svg';
+
+import './GithubButton.scss';
 
 function GithubButton(props) {
-  const [stat, setStat] = useState(true);
-  function handleChangeFocus() {
-    setStat(false)
-  }
   
   return (
      
     <>
-      <button className="button" style={props.style} onFocus={handleChangeFocus} onBlur={() => setStat(true)}>
+      <button className="githubButton" style={props.style} >
 
         <> 
-          <img
-            alt="..."
-            src={require("../img/icons/common/github.svg")}
-            className='githubIcon'
-          />
+          <GithubIcon className='githubIcon' />
             <ul className='label'>
               Github Repository
             </ul>
         </>
         <InputBase className='textInput' placeholder={'YourGithubLink e.g: https://github.com/alidaghighi/docker-compose-file-validator'} />
+          <SearchIcon className='searchIcon'/>
       </button>
     </>
     

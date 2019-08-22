@@ -1,4 +1,4 @@
-.uploadbutton {
+.uploadFileButton {
     margin: 2vh;
     width: 50vh;
     height: 8vh;
@@ -14,26 +14,26 @@
     justify-content: space-around;
     flex-direction: row;
     cursor: pointer;
-    & .uploadIcon {
+    & .uploadFileIcon {
         transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
         margin: 0vh 0vh 0vh 2vh;
     }
-    & .uploadText {
+    & .uploadFileText {
         transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
         margin: 0vh 5vh 0vh 0vh;
         font-size: 3vh;
     }
 }
-.uploadbutton:hover {
+.uploadFileButton:hover {
     border-width: 0;
     background-color: rgba(64, 120, 192, 0.39);
 }
-.uploadbutton:active {
+.uploadFileButton:active {
     border-width: 0;
     width: 50vh;
     background-color: rgba(64, 120, 192, 0.39);
 }
-.uploadbutton:focus-within {
+.uploadFileButton:focus-within {
     border-width: 0;
     width: 50vh;
     height: 8vh;

@@ -1,0 +1,98 @@
+.uploadDialog {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 3vh;
+}
+.dropzone {
+    margin: 2vh;
+}
+.uploadButton {
+    margin: 4vh 0 3vh 0;
+    width: 20vh;
+    height: 4vh;
+    border-radius: 20px;
+    display: flex;
+    border-style: solid;
+    border-color: rgb(13, 32, 58);
+    background-color: transparent;
+    border-width: 2px;
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    cursor: pointer;
+    // & .uploadFileIcon {
+    //     transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    //     margin: 0vh 0vh 0vh 2vh;
+    // }
+    & .uploadText {
+        transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+        font-size: 2vh;
+    }
+}
+.uploadButton:hover {
+    border-width: 0;
+    background-color: rgba(64, 120, 192, 0.39);
+}
+.uploadButton:active {
+    border-width: 0;
+    background-color: rgba(64, 120, 192, 0.39);
+}
+.uploadButton:focus-within {
+    border-width: 0;
+    background-color: rgba(64, 120, 192, 0.39);
+    outline: none;
+}
+.ymlIcon {
+    margin: 0vh 1vh 0vh 0vh;
+    width: 3vh;
+    height: 3vh;
+}
+.fileName {
+    margin: 0vh 1vh 0vh 0vh;
+}
+
+.uploadingButton {
+    margin: 4vh 0 3vh 0;
+    width: 20vh;
+    height: 4vh;
+    border-radius: 20px;
+    display: flex;
+    border-style: solid;
+    border-color: rgb(13, 32, 58);
+    border-width: 2px;
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    & .uploadText {
+        transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+        font-size: 2vh;
+    }
+}
+
+.uploadedButton {
+    margin: 4vh 0 3vh 0;
+    width: 20vh;
+    height: 4vh;
+    border-radius: 20px;
+    display: flex;
+    border-style: solid;
+    border-color: rgba(0, 230, 119, 0.616);
+    background-color: #00e67733;
+    border-width: 2px;
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    & .uploadText {
+        transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+        font-size: 2vh;
+    }
+}

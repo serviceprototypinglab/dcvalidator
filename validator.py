@@ -24,6 +24,7 @@ except:
 
 
 def autosearch_github(project, path):
+	print("https://api.github.com/search/code?q={}+in:path+org:{}&type=Code".format(path, project))
 	f = urllib.request.urlopen("https://api.github.com/search/code?q={}+in:path+org:{}&type=Code".format(path, project))
 	s = f.read().decode("utf-8")
 	f.close()
