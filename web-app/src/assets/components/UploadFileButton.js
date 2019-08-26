@@ -8,7 +8,16 @@ import './UploadFileButton.scss';
 
 
 function SimpleDialog(props) {
-  const { onClose, open } = props;
+  const {
+    onClose,
+    open,
+    fileSelectedHandler,
+    draged,
+    selectedFiles,
+    uploading,
+    uploadPercentage,
+    fileUploadHandler
+  } = props;
 
   function handleClose() {
     onClose();
@@ -22,7 +31,14 @@ function SimpleDialog(props) {
     onEscapeKeyDown={handleClose}
     transitionDuration={500}
     >
-      <FileUploder />
+      <FileUploder
+        fileSelectedHandler={fileSelectedHandler}
+        draged={draged}
+        selectedFiles={selectedFiles}
+        uploading={uploading}
+        uploadPercentage={uploadPercentage}
+        fileUploadHandler={fileUploadHandler}
+      />
     </Dialog>
   );
 }
@@ -33,6 +49,7 @@ function SimpleDialog(props) {
 
 export default function UploadFileButton(props) {
   const [open, setOpen] = useState(false);
+  const {fileSelectedHandler, draged, selectedFiles, uploading, uploadPercentage, fileUploadHandler } = props;
   function handleClickOpen() {
     setOpen(true);
   }
@@ -50,7 +67,16 @@ export default function UploadFileButton(props) {
               Upload Docker-compose
             </ul>
       </button>
-      <SimpleDialog open={open} onClose={handleClose} />
+      <SimpleDialog
+        open={open}
+        onClose={handleClose}
+        fileSelectedHandler={fileSelectedHandler}
+        draged={draged}
+        selectedFiles={selectedFiles}
+        uploading={uploading}
+        uploadPercentage={uploadPercentage}
+        fileUploadHandler={fileUploadHandler}
+      />
     </>
     
   

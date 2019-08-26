@@ -1,5 +1,5 @@
-import React, {useMemo, useState} from 'react';
-import axios from 'axios';
+import React, {useMemo} from 'react';
+// import axios from 'axios';
 import {useDropzone} from 'react-dropzone';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { ReactComponent as YmlIcon } from '../img/icons/common/yml.svg';
@@ -76,54 +76,20 @@ function StyledDropzone(props) {
 
 
 function FileUploder(props) {
-
-      const [selectedFiles, SetSelectedFiles] = useState([])
-      const [uploadPercentage,SetUploadPercentage] = useState(0)
-      const [uploading,SetUploading] = useState(0) // 0: No    1: uploading    2: finished
-      const [draged,SetDraged] = useState(false)
-      
-
-  const fileSelectedHandler = event => {
-      let files =  selectedFiles
-      event.map(file => {
-        if (!(file in files)) {
-          files.push(file)
-        }
-        return null
-      })
-      
-      SetSelectedFiles(files)
-      SetDraged(true)
-  }
-
-  const fileUploadHandler = () => {
-
-    var data = new FormData();
-    selectedFiles.map(file => data.append('file[]', file))
-    // https://us-central1-docker-compose-validator-b3e56.cloudfunctions.net/uploadFile
-    SetUploading(1)
-    axios.post('http://localhost:5000/upload', data, { 
-      mode: 'cors',
-      onUploadProgress: ProgressEvent => {
-        var uploadProgress = Math.round(ProgressEvent.loaded / ProgressEvent.total * 100)
-        // console.log('Uploaded: ' + uploadPercentage + '%')
-        SetUploadPercentage(uploadProgress)
-      }
-    })
-      .then(res => {
-        SetUploading(2)
-        console.log(res);
-      });
-  }
-
-
-
+  const {
+    fileSelectedHandler,
+    draged,
+    selectedFiles,
+    uploading,
+    uploadPercentage,
+    fileUploadHandler
+  } = props;
     return (
       <div className="uploadDialog">
-      <StyledDropzone onDrop={fileSelectedHandler} draged={draged} className="dropzone"/>
+      <StyledDropzone onDrop={ fileSelectedHandler} draged={ draged} className="dropzone"/>
       <span style={{display: 'flex', justifyContent: 'flex-start', flexDirection: 'column', alignSelf: 'flex-start', width: '100%'}}>
 
-      { selectedFiles &&
+      {  selectedFiles &&
         
          selectedFiles.map(file => <div style={{marginTop: '25px', alignItems: 'center', flexDirection: 'row', display:'flex', justifyContent: 'space-between'}}>
         <span style={{display:'flex', alignItems: 'center', flexDirection: 'row',}}>
@@ -136,19 +102,19 @@ function FileUploder(props) {
       }
       </span>
       <span style={{width: '100%', marginTop: '25px'}}>
-        { uploading !== 0 && <LinearProgress variant="determinate" value={ uploadPercentage} />}
+        {  uploading !== 0 && <LinearProgress variant="determinate" value={  uploadPercentage} />}
       </span>
-      { uploading === 0 &&  <button className="uploadButton" onClick={  fileUploadHandler}>
+      {  uploading === 0 &&  <button className="uploadButton" onClick={   fileUploadHandler}>
         <span className='uploadText'>
           Upload
         </span>
       </button>}
-      { uploading === 1 &&  <button className="uploadingButton" disabled>
+      {  uploading === 1 &&  <button className="uploadingButton" disabled>
         <span className='uploadText'>
           Uploading
         </span>
       </button>}
-      { uploading === 2 &&  <button className="uploadedButton" disabled>
+      {  uploading === 2 &&  <button className="uploadedButton" disabled>
         <span className='uploadText'>
           Uploaded!
         </span>

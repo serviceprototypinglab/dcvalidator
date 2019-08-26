@@ -1,8 +1,14 @@
+// @import url("https://cssicon.space/css/icons.css");
+$icon-width: 20px;
+$icon-height: 3px;
 .App {
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
+  // overflow: hidden;
+  // height: 100vh;
   
 }
 
@@ -14,16 +20,54 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
+  // z-index:: 10;
+  // overflow: hidden;
 }
 
 .App-header {
   color: #282c34;
-  min-height: 100vh;
-  
+  min-height: 65rem;
   background-color: white;
+  // z-index:: 10;
+  // overflow: hidden;
+  
+}
+
+.App-footer {
+  width: 100%;
+  // height: calc(14px + 6.5rem);
+  // align-self: flex-start;
+  display: flex;
+  flex-direction: row;
+  align-self: flex-start;
+  // justify-items: flex-start;
+  // justify-self: flex-end;
+  // background-color: aqua;
+  margin-top: 91vh;
+  position: absolute;
+  // z-index:: 1;
+  // overflow: hidden;
+
+  
 }
 
 
+.logo {
+  height: 5vmin;
+  pointer-events: none;
+  display: flex;
+  margin-top: 1.95rem;
+  margin-left: 1.95rem;
+  // z-index:: 10;
+  // overflow: hidden;
+}
 
-
+.boddy {
+  // width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  // z-index:: 10;
+  // overflow: hidden;
+}
