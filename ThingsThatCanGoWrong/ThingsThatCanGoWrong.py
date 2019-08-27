@@ -10,6 +10,7 @@ issues = {
     'Duplicate container name' : 'CHECK',
     'Duplicate image' : 'CHECK',
     'Duplicate port' : 'CHECK',
+    'expose' : 'TODO',
     'Invalid volume directory' : 'TODO', # Only for github and CLI.
     'build label and all it needs' : 'TODO', # Including: build, CONTEXT, DOCKERFILE, ARGS, CACHE_FROM, LABELS, SHM_SIZE, TARGET, cap_add, cap_drop, cgroup_parent, command
     # Build path is only for github links and CLI
@@ -35,7 +36,6 @@ issues = {
     'dns_search' : 'TODO',
     'entrypoint' : 'TODO',
     'env_file' : 'TODO', # What's the difrence with environment?
-    'expose' : 'TODO',
     'external_links' : 'TODO',
     'extra_hosts' : 'TODO',
     'healthcheck' : 'TODO',

@@ -2,5 +2,8 @@
 /node_modules
 
 #Undr construction :)
+/_cache
 /node-server
 server.js
+validator-cli-test.py
+validatortest.py
