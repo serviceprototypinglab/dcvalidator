@@ -3,11 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "client": "cd web-app && yarn start",
-    "server2": "nodemon server.js",
-    "server":"cd web-app && cd server && python server.py",
-    "underconstruction": "cd server && nodemon server.js",
-    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
-    "dev2": "concurrently --kill-others-on-fail \"yarn server2\" \"yarn client\""
+    "server":"cd server && python server.py",
+    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
   },
   "dependencies": {
     "body-parser": "^1.19.0",

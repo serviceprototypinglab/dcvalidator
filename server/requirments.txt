@@ -1,0 +1,4 @@
+flask
+flask_restful 
+werkzeug.utils
+flask_cors

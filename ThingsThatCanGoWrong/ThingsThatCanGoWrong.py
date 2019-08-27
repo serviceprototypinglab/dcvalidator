@@ -10,8 +10,9 @@ issues = {
     'Duplicate container name' : 'CHECK',
     'Duplicate image' : 'CHECK',
     'Duplicate port' : 'CHECK',
-    'Invalid volume directory' : 'TODO',
+    'Invalid volume directory' : 'TODO', # Only for github and CLI.
     'build label and all it needs' : 'TODO', # Including: build, CONTEXT, DOCKERFILE, ARGS, CACHE_FROM, LABELS, SHM_SIZE, TARGET, cap_add, cap_drop, cgroup_parent, command
+    # Build path is only for github links and CLI
     'image lable' : 'TODO',
     'other versions of compose' : 'TODO',  # Lastest version can cover older versions, right? :)
     'local use' : 'TODO',
