@@ -92,18 +92,43 @@ class Validator:
 		return contents
 
 	def __duplicate_tag_founder__(self, itterable):
-		tag_set = set()
-		for i in itterable:
-			if type(i) == type(tuple()):
-				if i[0] in tag_set:
-					err_message = '* Duplicate label {} in Docker-compose file.'.format(i[0])
-					print("="*(len(err_message)//2 - 3) + " ERROR " + "="*(len(err_message)//2 - 3))
-					print(err_message)
-					print("="*len(err_message))
-				else:
-					tag_set.add(i[0])
-				if type(i[1]) == type(list()):
-					self.__duplicate_tag_founder__(i[1])
+		# tag_set = set()
+		# for i in itterable:
+		# 	if type(i) == type(tuple()):
+		# 		if i[0] in tag_set:
+		# 			err_message = '* Duplicate label {} in Docker-compose file.'.format(i[0])
+		# 			print("="*(len(err_message)//2 - 3) + " ERROR " + "="*(len(err_message)//2 - 3))
+		# 			print(err_message)
+		# 			print("="*len(err_message))
+		# 		else:
+		# 			tag_set.add(i[0])
+		# 		if type(i[1]) == type(list()):
+		# 			self.__duplicate_tag_founder__(i[1])
+		visited = []
+		for key in itterable:
+		    if type(key)==type(tuple()) or type(key)==type(list()):
+		        if key[0] in visited:
+		            print("="*(27) + " ERROR " + "="*(27))
+		            print('This {} key is duplicate '.format(key[0]))
+		            print("="*(61) + '\n')
+		            break
+		        else:
+		            visited.append(key[0])
+
+	def __itterator__(self, itterable):
+		if type(itterable) == type(dict()):
+		    for key in itterable:
+		        if type(itterable[key])==type(list()):
+#  		              __duplicate_tag_founder__(itterable[key])
+		            self.__duplicate_tag_founder__(itterable[key])
+#  		              itterator(itterable[key])
+		        else:
+		            self.__itterator__(itterable[key])
+		elif (type(itterable)==type(tuple()) or type(itterable)==type(list())):
+#  		      __duplicate_tag_founder__(itterable)
+		    self.__duplicate_tag_founder__(itterable)
+		    for item in itterable:
+		        self.__itterator__(item)
 
 	def __consistencycheck__(self, contents):
 		print("checking consistency...")
@@ -115,7 +140,7 @@ class Validator:
 		for content in contents:
 			parsed = yamlreader.reader(contents[content])
 			
-			self.__duplicate_tag_founder__(itterable=parsed)
+			self.__itterator__(parsed)
 				
 				
 				
@@ -214,7 +239,7 @@ class Validator:
 				time.sleep(t)
 				t *= 2
 
-	def validator(self, autosearch, filebased, urlbased, eventing,):
+	def validator(self, autosearch, filebased, urlbased, eventing, filebasedlist=None):
 		composefiles = []
 
 		d_start = time.time()

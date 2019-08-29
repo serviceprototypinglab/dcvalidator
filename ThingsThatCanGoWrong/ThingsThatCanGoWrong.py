@@ -7,6 +7,8 @@
 
 issues = {
     'Duplicate service name' : 'CHECK',
+    'Typing mistake': 'TODO',
+    'top-level property': 'TODO', # version, services, networks, volumes, and extensions starting with "x-"
     'Duplicate container name' : 'CHECK',
     'Duplicate image' : 'CHECK',
     'Duplicate port' : 'CHECK',
