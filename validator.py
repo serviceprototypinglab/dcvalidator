@@ -91,7 +91,7 @@ class Validator:
 		print()
 		return contents
 
-	def __duplicate_tag_founder__(self, itterable):
+	def __duplicate_tag_founder__(self, itterable, counter):
 		# tag_set = set()
 		# for i in itterable:
 		# 	if type(i) == type(tuple()):
@@ -106,29 +106,55 @@ class Validator:
 		# 			self.__duplicate_tag_founder__(i[1])
 		visited = []
 		for key in itterable:
-		    if type(key)==type(tuple()) or type(key)==type(list()):
-		        if key[0] in visited:
-		            print("="*(27) + " ERROR " + "="*(27))
-		            print('This {} key is duplicate '.format(key[0]))
-		            print("="*(61) + '\n')
-		            break
-		        else:
-		            visited.append(key[0])
+			counter += 1
+			if type(key)==type(tuple()) or type(key)==type(list()):
+				if key[0] in visited:
+				    print("="*(27) + " ERROR " + "="*(27))
+				    print('Line {}, this {} key is duplicate'.format(counter, key[0]))
+				    print("="*(61) + '\n')
+				    break
+				else:
+				    visited.append(key[0])
+		return counter
 
-	def __itterator__(self, itterable):
+	def __itterator__(self, itterable, counter=0):
 		if type(itterable) == type(dict()):
-		    for key in itterable:
-		        if type(itterable[key])==type(list()):
-#  		              __duplicate_tag_founder__(itterable[key])
-		            self.__duplicate_tag_founder__(itterable[key])
-#  		              itterator(itterable[key])
-		        else:
-		            self.__itterator__(itterable[key])
+			for key in itterable:
+				counter += 1
+				if type(itterable[key])==type(list()):
+#  		   	   	   	  __duplicate_tag_founder__(itterable[key])
+					counter = self.__duplicate_tag_founder__(itterable[key], counter)
+#  		   	   	   	  itterator(itterable[key])
+				else:
+					self.__itterator__(itterable[key], counter=counter)
 		elif (type(itterable)==type(tuple()) or type(itterable)==type(list())):
-#  		      __duplicate_tag_founder__(itterable)
-		    self.__duplicate_tag_founder__(itterable)
-		    for item in itterable:
-		        self.__itterator__(item)
+#  		   	  __duplicate_tag_founder__(itterable)
+			counter = self.__duplicate_tag_founder__(itterable, counter)
+			for item in itterable:
+				counter += 1
+				self.__itterator__(item, counter=counter)
+				
+	def __top_level_property_checker__(self, itterable):
+		priority = {
+			'version': 4,
+			'services': 3,
+			'networks': 2,
+			'volumes': 1
+		}
+
+		if type(itterable) == type(dict()):
+			temp_itterable = list(itterable)
+			for index in range(1,len(temp_itterable)-1):
+				if priority[temp_itterable[index]] < priority[temp_itterable[index + 1]]:
+					print('top level property error:', temp_itterable[index], 'should not be before', temp_itterable[index + 1])
+				if priority[temp_itterable[index - 1]] < priority[temp_itterable[index]]:
+					print('top level property error:', temp_itterable[index], 'should not be after', temp_itterable[index - 1])
+		if type(itterable) == type(list()):
+			for index in range(1,len(itterable)-1):
+				if priority[itterable[index][0]] < priority[itterable[index + 1][0]]:
+					print('top level property error:', itterable[index][0], 'should not be before', itterable[index + 1][0])
+				if priority[itterable[index - 1][0]] < priority[itterable[index][0]]:
+					print('top level property error:', itterable[index][0], 'should not be after', itterable[index - 1][0])
 
 	def __consistencycheck__(self, contents):
 		print("checking consistency...")
@@ -139,7 +165,7 @@ class Validator:
 
 		for content in contents:
 			parsed = yamlreader.reader(contents[content])
-			
+			self.__top_level_property_checker__(parsed)
 			self.__itterator__(parsed)
 				
 				
@@ -173,13 +199,20 @@ class Validator:
 								# raise Exception ('Path Error')
 					if "ports" in c["services"][service]:
 						for port in c["services"][service]["ports"]:
-							port_temp = port.split(':')
-							port_host = port_temp[0]
-							if port_host in cacheports:
-								print("Duplicate ports in service ",service, " port ", port_host)
-								# raise Exception ('Duplicate ports')
-							else:
-								cacheports.append(port_host)
+							if type(port) == type(""):
+								try:
+									port_temp = port.split(':')
+								except:
+									print("Tip: It's better to use the HOST:CONTAINER structure")
+								else:
+									port_host = port_temp[0]
+									if port_host in cacheports:
+										print("Duplicate ports in service ",service, " port ", port_host)
+										# raise Exception ('Duplicate ports')
+									else:
+										cacheports.append(port_host)
+							if type(port) == type(int()):
+								cacheports.append(port)
 					if not "labels" in c["services"][service]:
 						print("  ! no labels found")
 						faulty[contentname] = faulty.get(contentname, 0) + 1
@@ -239,14 +272,14 @@ class Validator:
 				time.sleep(t)
 				t *= 2
 
-	def validator(self, autosearch, filebased, urlbased, eventing, filebasedlist=None):
+	def validator(self, autosearch, filebasedlist, urlbased, eventing, filebased=None):
 		composefiles = []
 
 		d_start = time.time()
 		cachefiles = self.__loadcache__()
 
-		if filebased:
-			f = open(filebased)
+		if filebasedlist:
+			f = open(filebasedlist)
 			composefiles += [line.strip() for line in f.readlines()]
 
 		if urlbased:

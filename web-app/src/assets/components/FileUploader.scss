@@ -42,15 +42,17 @@
     border-width: 0;
     background-color: rgba(64, 120, 192, 0.39);
 }
-.uploadButton:focus-within {
-    border-width: 0;
-    background-color: rgba(64, 120, 192, 0.39);
-    outline: none;
-}
 .ymlIcon {
     margin: 0vh 1vh 0vh 0vh;
     width: 3vh;
     height: 3vh;
+}
+.DeleteIcon {
+    margin: 0vh 0vh 0.75vh 1vh;
+    width: 1.5vh;
+    height: 1.5vh;
+    align-self: flex-end;
+    justify-self: center;
 }
 .fileName {
     margin: 0vh 1vh 0vh 0vh;
@@ -78,13 +80,17 @@
 
 .uploadedButton {
     margin: 4vh 0 3vh 0;
-    width: 20vh;
+    width: 0vh;
     height: 4vh;
     border-radius: 20px;
     display: flex;
     border-style: solid;
-    border-color: rgba(0, 230, 119, 0.616);
-    background-color: #00e67733;
+    // border-color: rgba(0, 230, 119, 0.616);
+    // background-color: #00e67733;
+    // border-color: rgba(0, 230, 119, 0);
+    // background-color: #00e67700;
+    border-color: transparent;
+    background-color: transparent;
     border-width: 2px;
     transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
     position: relative;
@@ -96,3 +102,65 @@
         font-size: 2vh;
     }
 }
+
+.analysButton {
+    margin: 4vh 0 3vh 0;
+    width: 20vh;
+    height: 4vh;
+    border-radius: 20px;
+    display: flex;
+    border-style: solid;
+    border-color: rgb(13, 32, 58);
+    background-color: transparent;
+    border-width: 2px;
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    cursor: pointer;
+    // & .uploadFileIcon {
+    //     transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    //     margin: 0vh 0vh 0vh 2vh;
+    // }
+    & .uploadText {
+        width: 100%;
+        height: 100%;
+        transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+        font-size: 2vh;
+    }
+}
+
+.analysButton:hover {
+    border-width: 0;
+    background-color: rgba(64, 120, 192, 0.39);
+}
+.analysButton:active {
+    border-width: 0;
+    background-color: rgba(64, 120, 192, 0.39);
+}
+
+
+.disabledUploadButton {
+    margin: 4vh 0 3vh 0;
+    width: 20vh;
+    height: 4vh;
+    border-radius: 20px;
+    display: flex;
+    border-style: solid;
+    border-color: rgb(13, 32, 58);
+    border-width: 2px;
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    & .uploadText {
+        transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+        font-size: 2vh;
+    }
+}
+
+.disabledUploadButton, .uploadedButton, .uploadingButton, .uploadButton, .uploadButton:hover, .uploadButton:active, .analysButton, .analysButton:hover, .analysButton:active { 
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+  }

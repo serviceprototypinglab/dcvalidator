@@ -1,5 +1,6 @@
 import React from 'react';
 import InputBase from '@material-ui/core/InputBase';
+import { Link } from 'react-router-dom';
 
 import { ReactComponent as SearchIcon } from '../img/icons/common/analytics.svg';
 import { ReactComponent as GithubIcon } from '../img/icons/common/github.svg';
@@ -7,23 +8,29 @@ import { ReactComponent as GithubIcon } from '../img/icons/common/github.svg';
 import './GithubButton.scss';
 
 function GithubButton(props) {
-  return (
-     
-    <>
-      <button className="githubButton" style={props.style} >
+  const { style, searchClicked, gitURL, urlInputChange, handleKeyDown, placeholder } = props
 
-        <> 
+  return (
+
+    <>
+
+      <button className="githubButton" style={style} >
+
+        <>
           <GithubIcon className='githubIcon' />
-            <ul className='label'>
-              Github Repository
+          <ul className='label'>
+            Github Repository
             </ul>
         </>
-        <InputBase className='textInput' placeholder={'YourGithubLink e.g: https://github.com/alidaghighi/docker-compose-file-validator'} value={props.gitURL} onChange={props.urlInputChange} />
-          <SearchIcon className='searchIcon' onClick={props.searchClicked}/>
+        <InputBase className='textInput' placeholder={placeholder} value={gitURL} onChange={urlInputChange} onKeyDown={handleKeyDown} />
+        <Link to='/analyzing'>
+          <SearchIcon className='searchIcon' onClick={searchClicked} />
+        </Link>
       </button>
+
     </>
-    
-  
+
+
   );
-}  
+}
 export default GithubButton;

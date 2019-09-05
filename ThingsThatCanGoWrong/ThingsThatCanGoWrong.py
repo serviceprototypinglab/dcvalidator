@@ -8,9 +8,11 @@
 issues = {
     'Duplicate service name' : 'CHECK',
     'Typing mistake': 'TODO',
-    'top-level property': 'TODO', # version, services, networks, volumes, and extensions starting with "x-"
+    'top-level property': 'CHECK', # version, services, networks, volumes
+    'extensions starting with x-': 'TODO', #Version 3.4 or higher
     'Duplicate container name' : 'CHECK',
     'Duplicate image' : 'CHECK',
+    'Duplicate Key in docker compose': 'CHECK',
     'Duplicate port' : 'CHECK',
     'expose' : 'TODO',
     'Invalid volume directory' : 'TODO', # Only for github and CLI.
