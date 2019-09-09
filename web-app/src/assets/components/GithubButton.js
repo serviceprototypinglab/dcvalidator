@@ -1,6 +1,5 @@
 import React from 'react';
 import InputBase from '@material-ui/core/InputBase';
-import { Link } from 'react-router-dom';
 
 import { ReactComponent as SearchIcon } from '../img/icons/common/analytics.svg';
 import { ReactComponent as GithubIcon } from '../img/icons/common/github.svg';
@@ -23,9 +22,7 @@ function GithubButton(props) {
             </ul>
         </>
         <InputBase className='textInput' placeholder={placeholder} value={gitURL} onChange={urlInputChange} onKeyDown={handleKeyDown} />
-        <Link to='/analyzing'>
           <SearchIcon className='searchIcon' onClick={searchClicked} />
-        </Link>
       </button>
 
     </>

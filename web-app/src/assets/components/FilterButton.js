@@ -24,6 +24,7 @@ export default function FilterButton(props) {
                 control={
                   <Checkbox
                     checked={filters[filter]}
+                    disabled={filter === 'Duplicate Keys'? true : false}
                     onChange={handleChangeFilters(filter)}
                     value={filter}
                     color="primary"

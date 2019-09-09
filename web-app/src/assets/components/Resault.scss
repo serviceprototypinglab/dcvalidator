@@ -1,0 +1,121 @@
+.resault-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.resault-header{
+    margin: 2rem;
+    font-size: 2rem;
+}
+.paper {
+    padding:1rem 0rem 0rem 3rem; 
+    
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 60rem;
+    height: 35rem;
+    // margin-top: 5rem;
+    overflow-y: scroll;
+    border-radius: 10px;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+}
+.paper::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    // padding-right: 2px;
+	border-radius: 10px;
+	// background-color: rgba(0, 0, 0, 0.055);
+}
+.paper::-webkit-scrollbar:hover {
+    /* Select the down or left scroll button when it's being hovered by the mouse */
+    background-color: rgba(0, 0, 0, 0.055);
+    border-radius: 10px;
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+ }
+.paper::-webkit-scrollbar
+{   
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    width: 10px;
+    border-radius: 10px;
+	background-color: rgba(245, 245, 245, 0);
+}
+
+.paper::-webkit-scrollbar-thumb
+{
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+	border-radius: 10px;
+	// -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: rgba(207, 207, 207, 0.76);
+}
+.button-bar {
+    margin: 4vh 0 3vh 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.resault-download-button {
+    width: 20vh;
+    height: 4vh;
+    border-radius: 20px;
+    display: flex;
+    border-style: solid;
+    border-color: rgb(13, 32, 58);
+    background-color: transparent;
+    border-width: 2px;
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    cursor: pointer;
+    & .text {
+        transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+        font-size: 1.25rem;
+    }
+}
+.resault-download-button:hover {
+    border-width: 0;
+    background-color: rgba(64, 120, 192, 0.39);
+}
+.resault-download-button:active {
+    border-width: 0;
+    background-color: rgba(64, 120, 192, 0.39);
+}
+
+.resault-back-button {
+    margin: 0 1rem 0 -1rem;
+    width: 6vh;
+    height: 4vh;
+    border-radius: 20px;
+    display: flex;
+    border-style: solid;
+    border-color: rgb(13, 32, 58);
+    background-color: transparent;
+    border-width: 2px;
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    cursor: pointer;
+    & .left-arrow {
+        transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+        height: 3vh;
+        width: 3vh;
+    }
+
+}
+.resault-back-button:hover {
+    border-width: 0;
+    background-color: rgba(64, 120, 192, 0.39);
+}
+.resault-back-button:active {
+    border-width: 0;
+    background-color: rgba(64, 120, 192, 0.39);
+}

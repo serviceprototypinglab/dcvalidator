@@ -1,0 +1,44 @@
+
+.App-logo {
+    font-size: calc(10px + 2vmin);
+    height: 40vmin;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    // z-index:: 10;
+    // overflow: hidden;
+  }
+
+  .App-footer {
+    width: 100%;
+    // height: calc(14px + 6.5rem);
+    // align-self: flex-start;
+    display: flex;
+    flex-direction: row;
+    align-self: flex-start;
+    // justify-items: flex-start;
+    // justify-self: flex-end;
+    // background-color: aqua;
+    margin-top: 91vh;
+    position: absolute;
+    // z-index:: 1;
+    // overflow: hidden;
+  
+    
+  }
+  .logo {
+    height: 5vmin;
+    pointer-events: none;
+    display: flex;
+    margin-top: 1.95rem;
+    margin-left: 1.95rem;
+    // z-index:: 10;
+    // overflow: hidden;
+  }
+  .container {
+    // height: 100vh;
+    display: flex;
+    justify-content: center;
+  }

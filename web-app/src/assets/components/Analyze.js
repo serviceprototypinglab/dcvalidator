@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Lottie from 'react-lottie';
-import axios from 'axios';
 
 import animationData from '../lotties/clock.json';
 
@@ -9,10 +8,6 @@ import animationData from '../lotties/clock.json';
 class Analyze extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            data: this.props.data,
-            resault: null,
-        }
         this.defaultOptions = {
             loop: true,
             autoplay: true,
@@ -21,18 +16,6 @@ class Analyze extends Component {
                 preserveAspectRatio: 'xMidYMid slice'
             }
         };
-        console.log(this.state.data)
-        this.apiCall();
-    }
-    apiCall = () => {
-        axios.post('http://localhost:5000/analyzing', this.state.data, {
-            mode: 'cors',
-        })
-            .then(res => {
-                console.log(res.data)
-                this.setState({ resault: res })
-                // setTimeout(() => setOpen(false), 1500)
-            });
     }
     render() {
         return (

@@ -36,6 +36,6 @@ def reader(content):
     try:
         parsed = yaml_overwrited.load(content)
         print("syntax is ok")
+        return parsed
     except:
         print("yaml syntax error")
-    return parsed

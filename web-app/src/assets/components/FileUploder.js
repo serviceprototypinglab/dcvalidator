@@ -1,8 +1,8 @@
 import React, { useMemo, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Lottie from 'react-lottie';
+
 import { ReactComponent as YmlIcon } from '../img/icons/common/yml.svg';
 // import { ReactComponent as DeleteIcon } from '../img/icons/common/delete.svg';
 import loadingAnimationData from '../lotties/loader.json';
@@ -89,7 +89,7 @@ function FileUploder(props) {
     selectedFiles,
     uploading,
     uploadPercentage,
-    fileUploadHandler
+    fileUploadHandler,
   } = props;
   useEffect(() => {
     if (selectedFiles.length <= 0) {
@@ -165,7 +165,6 @@ function FileUploder(props) {
           />
           }
           {uploading === 3 &&
-          <Link style={{color: 'black', textDecoration: 'none'}} to='/analyzing'>
             <div
               style={{
                 display: 'flex',
@@ -178,7 +177,6 @@ function FileUploder(props) {
                 Analys
               </span>
             </div>
-            </Link>
           }
         </span>
       </button>

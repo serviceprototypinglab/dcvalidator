@@ -16,7 +16,7 @@ function Main(props) {
   // const initialFilters = {'Duplicate service name':true, 'Duplicate container name':true, 'Duplicate image':true, 'Duplicate port':true} 
   const { initialFilters, setData } = props
   const filtersName = Object.keys(initialFilters)
-  let data = new FormData();
+  const data = new FormData();
 
   // States
   const [filterIcon, SetFilterIcon] = useState('plus icon')
@@ -32,11 +32,10 @@ function Main(props) {
   useEffect(() => {
       var snedfilters = []
       filtersName.map(filter => filters[filter] ? snedfilters.push(filter) : null)
-      data.append('labels[]', snedfilters)
+      data.append('labels[]', snedfilters.toString())
       selectedFiles.map(file => data.append('file[]', file))
       // data.append('file[]', selectedFiles)
       data.append('URL', gitURL)
-      console.log('Append!')
   })
 
   const apiCall = () => {
@@ -151,7 +150,7 @@ function Main(props) {
           />
         </span>
       </span>
-      <footer className="App-footer">
+      {/* <footer className="App-footer">
         <img
           alt="..."
           src={require("../img/brand/SPLab.svg")}
@@ -162,7 +161,7 @@ function Main(props) {
           src={require("../img/brand/logos_ZHAW.svg")}
           className='logo'
         />
-      </footer>
+      </footer> */}
       {/* <SimpleDialog
           open={open}
           onClose={handleClose}

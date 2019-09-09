@@ -39,8 +39,9 @@ class Validator:
 
 	def __normalise_githuburl__(self, url):
 		m = re.match(r"^https://github.com/(.+)/blob/(.+)", url)
-		if len(m.groups()) == 2:
-			url = "https://raw.githubusercontent.com/{}/{}".format(m.groups()[0], m.groups()[1])
+		if m:
+			if len(m.groups()) == 2:
+				url = "https://raw.githubusercontent.com/{}/{}".format(m.groups()[0], m.groups()[1])
 		return url
 
 	def __loadcache__(self):
@@ -109,9 +110,9 @@ class Validator:
 			counter += 1
 			if type(key)==type(tuple()) or type(key)==type(list()):
 				if key[0] in visited:
-				    print("="*(27) + " ERROR " + "="*(27))
-				    print('Line {}, this {} key is duplicate'.format(counter, key[0]))
-				    print("="*(61) + '\n')
+				    self.__log_writer__("="*(27) + " ERROR " + "="*(27))
+				    self.__log_writer__('Line {}, this {} key is duplicate'.format(counter, key[0]))
+				    self.__log_writer__("="*(61) + '\n')
 				    break
 				else:
 				    visited.append(key[0])
@@ -146,17 +147,23 @@ class Validator:
 			temp_itterable = list(itterable)
 			for index in range(1,len(temp_itterable)-1):
 				if priority[temp_itterable[index]] < priority[temp_itterable[index + 1]]:
-					print('top level property error:', temp_itterable[index], 'should not be before', temp_itterable[index + 1])
+					self.__log_writer__('top level property error:'+ str(temp_itterable[index])+ 'should not be before'+ str(temp_itterable[index + 1]))
 				if priority[temp_itterable[index - 1]] < priority[temp_itterable[index]]:
-					print('top level property error:', temp_itterable[index], 'should not be after', temp_itterable[index - 1])
+					self.__log_writer__('top level property error:'+ str(temp_itterable[index])+ 'should not be after'+ str(temp_itterable[index - 1]))
 		if type(itterable) == type(list()):
 			for index in range(1,len(itterable)-1):
 				if priority[itterable[index][0]] < priority[itterable[index + 1][0]]:
-					print('top level property error:', itterable[index][0], 'should not be before', itterable[index + 1][0])
+					self.__log_writer__('top level property error:'+ str(itterable[index][0])+ 'should not be before'+ str(itterable[index + 1][0]))
 				if priority[itterable[index - 1][0]] < priority[itterable[index][0]]:
-					print('top level property error:', itterable[index][0], 'should not be after', itterable[index - 1][0])
+					self.__log_writer__('top level property error:'+ str(itterable[index][0])+ 'should not be after'+ str(itterable[index - 1][0]))
+	
+	def __log_writer__(self, text):
+		print(text)
+		f = open("logs.txt", "a+")
+		f.writelines(text + '\n')
+		f.close()
 
-	def __consistencycheck__(self, contents):
+	def __consistencycheck__(self, contents, labelArray):
 		print("checking consistency...")
 
 		numservices = 0
@@ -167,78 +174,81 @@ class Validator:
 			parsed = yamlreader.reader(contents[content])
 			self.__top_level_property_checker__(parsed)
 			self.__itterator__(parsed)
+			print(content)	
 				
 				
-				
-				
-			contentname = "faulty:" + content.split("/")[4]
+			if "https://github.com/" in content:
+				contentname = "faulty:" + content.split("/")[4]
+			else:
+				contentname = "faulty:None"
 			faulty[contentname] = 0.0
+
 
 			c = yaml.load(contents[content])
 
 			if "services" in c:
 				cacheports = []
 				cachecontainername = []
-				print("= type: docker-compose")
+				self.__log_writer__("= type: docker-compose")
 				for service in c["services"]:
-					print("- service:", service)
+					self.__log_writer__("- service:"+ service)
 					numservices += 1
 					if not "container_name" in c["services"][service]:
-						print("**Warning**  no container name found")
+						self.__log_writer__("**Warning**  no container name found")
 					elif c["services"][service]["container_name"] in cachecontainername:
-						print("Duplicate container name: ", c["services"][service]["container_name"])
+						self.__log_writer__("Duplicate container name: "+ c["services"][service]["container_name"])
 						# raise Exception ('Duplicate container name')
 					else:
 						cachecontainername.append(c["services"][service]["container_name"])
-					if "volumes" in c["services"][service]:
-						for volume in c["services"][service]["volumes"]:
-							temp_dir = volume.split(':')
-							onhostdir = temp_dir[0]
-							if not os.path.exists(onhostdir):
-								print ("Check path ", onhostdir, " for volume on service", service)
+					# if "volumes" in c["services"][service]:
+					# 	for volume in c["services"][service]["volumes"]:
+					# 		temp_dir = volume.split(':')
+					# 		onhostdir = temp_dir[0]
+					# 		if not os.path.exists(onhostdir):
+					# 			self.__log_writer__ ("Check path "+ str(onhostdir)+ " for volume on service"+ service)
 								# raise Exception ('Path Error')
-					if "ports" in c["services"][service]:
+					if "ports" in c["services"][service] and 'Duplicate ports' in labelArray:
 						for port in c["services"][service]["ports"]:
 							if type(port) == type(""):
 								try:
 									port_temp = port.split(':')
 								except:
-									print("Tip: It's better to use the HOST:CONTAINER structure")
+									self.__log_writer__("Tip: It's better to use the HOST:CONTAINER structure")
 								else:
 									port_host = port_temp[0]
 									if port_host in cacheports:
-										print("Duplicate ports in service ",service, " port ", port_host)
+										self.__log_writer__("Duplicate ports in service "+service+ " port "+ str(port_host))
 										# raise Exception ('Duplicate ports')
 									else:
 										cacheports.append(port_host)
 							if type(port) == type(int()):
 								cacheports.append(port)
 					if not "labels" in c["services"][service]:
-						print("  ! no labels found")
+						self.__log_writer__("  ! no labels found")
 						faulty[contentname] = faulty.get(contentname, 0) + 1
 						continue 
 					for labelpair in c["services"][service]["labels"]:
-						print("  - label:", labelpair)
+						self.__log_writer__("  - label:"+ str(labelpair))
 						label, value = labelpair.split("=")
 						alltags[label] = alltags.get(label, 0) + 1
 					
 
 			elif "apiVersion" in c and "items" in c:
-				print("= type: kubernetes")
+				self.__log_writer__("= type: kubernetes")
 				for service in c["items"]:
 					name = service["metadata"]["name"]
-					print("- service:", service["kind"], name)
+					self.__log_writer__("- service:"+ str(service["kind"])+ str(name))
 					numservices += 1
 					if not "labels" in service["metadata"]:
-						print("  ! no labels found")
+						self.__log_writer__("  ! no labels found")
 						faulty[contentname] = faulty.get(contentname, 0) + 1
 						continue
 					for label in service["metadata"]["labels"]:
 						value = service["metadata"]["labels"][label]
-						print("  - label:", label, "=", value)
+						self.__log_writer__("  - label:"+ str(label)+ "="+ str(value))
 						alltags[label] = alltags.get(label, 0) + 1
 			else:
-				print("! no docker-compose or kubernetes service entries found")
+				self.__log_writer__("! no docker-compose or kubernetes service entries found")
 				faulty[contentname] = faulty.get(contentname, 0) + 1
 				continue
 
@@ -265,14 +275,14 @@ class Validator:
 				else:
 					p.send(label, key=series.encode("utf-8"), value=message.encode("utf-8"))
 					p.close()
-				print("success")
+				self.__log_writer__("success")
 				success = True
 			except Exception as e:
-				print("error (sleep {})".format(t), e)
+				self.__log_writer__("error (sleep {})".format(t)+ str(e))
 				time.sleep(t)
 				t *= 2
 
-	def validator(self, autosearch, filebasedlist, urlbased, eventing, filebased=None):
+	def validator(self, autosearch, filebasedlist, urlbased, eventing, filebased=None, labelArray=[]):
 		composefiles = []
 
 		d_start = time.time()
@@ -284,7 +294,8 @@ class Validator:
 
 		if urlbased:
 			composefiles += [urlbased]
-
+		if filebased:
+			composefiles += [filebased]
 		if autosearch:
 			if not cachefiles:
 				org, basepath = autosearch.split("/")
@@ -294,14 +305,14 @@ class Validator:
 		
 		contents = self.__loading__(cachefiles, composefiles)
 		
-		numservices, alltags, faulty = self.__consistencycheck__(contents)
+		numservices, alltags, faulty = self.__consistencycheck__(contents, labelArray)
 		d_end = time.time()
 
-		print("services: {}".format(numservices))
-		print("labels:")
+		self.__log_writer__("services: {}".format(numservices))
+		self.__log_writer__("labels:")
 		for label in alltags:
-			print("- {}: {} ({:.1f}% coverage)".format(label, alltags[label], 100 * alltags[label] / numservices))
-		print("time: {:.1f}s".format(d_end - d_start))
+			self.__log_writer__("- {}: {} ({:.1f}% coverage)".format(label, alltags[label], 100 * alltags[label] / numservices))
+		self.__log_writer__("time: {:.1f}s".format(d_end - d_start))
 
 		d = {}
 		d["agent"] = "sentinel-generic-agent"
