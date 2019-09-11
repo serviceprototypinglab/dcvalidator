@@ -6,42 +6,15 @@ When we are using docker-compose, we may make some silly mistake. This tool has 
 version: '3'
 
 services:
-         eim:
-                image: elastest/eim:latest
-                depends_on:
-                        - edm-mysql  
-                stdin_open: true
-                tty: true
-                environment:
-                        - ET_EDM_ALLUXIO_API=http://edm-alluxio-master:19999/
-                        - ET_EDM_MYSQL_HOST=edm-mysql
-                        - ET_EDM_MYSQL_PORT=3306
-                        - ET_EDM_ELASTICSEARCH_API=http://edm-elasticsearch:9200/
-                        - ET_EDM_API=http://edm:37003/
-                        - ET_EPM_API=http://epm:37002/
-                        - ET_ETM_API=http://etm:37006/
-                        - ET_ESM_API=http://esm:37005/
-                        - ET_EIM_API=http://eim:37004/
-                        - ET_ETM_LSBEATS_HOST=etm-beats
-                        - ET_ETM_LSBEATS_PORT=5044
-                        - ET_ETM_LSHTTP_API=http://etm-logstash:5002/
-                        - ET_ETM_RABBIT_HOST=etm-rabbitmq
-                        - ET_ETM_RABBIT_PORT=5672
-                        - ET_EMP_API=http://eim:37001/
-                        - ET_EMP_INFLUXDB_API=http://emp-influxdb:8086/
-                        - ET_EMP_INFLUXDB_HOST=emp-influxdb
-                        - ET_EMP_INFLUXDB_GRAPHITE_PORT=2003
-                expose:
-                        - 8080
-                ports:
-                        - "37004:8080" 
-                networks:
-                        - elastest
-                labels:
-                        - io.elastest.type=core
-networks:
-        elastest:
-                driver: bridge
+    app:
+        build: .
+        image: takacsmark/flask-redis:1.0
+        environment:
+          - FLASK_ENV=development
+        ports:
+          - "4999-5005:4999-5005"
+    redis:
+        image: redis:4.0.11-alpine
 ```
 This is a docker-compose that works correctly!
 But imagine that you need more services. More services mean that docker-compose should be more complicated! And at this point, human mistakes showing up! I'll add more services, and at this point, I forgot that two of them have the same name, but <b>THEY ARE NOT THE SAME SERVICE!</b>
