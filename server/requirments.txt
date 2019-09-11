@@ -1,4 +1,5 @@
 flask
-flask_restful 
-werkzeug.utils
+werkzeug
 flask_cors
+pyYaml
+ruamel.yaml
