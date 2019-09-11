@@ -1,6 +1,6 @@
 # Docker Compose Validator
 ## Idea
-When we are using docker-compose, we may make some silly mistake. This tool has this responsibility to remind you of these mistakes.
+When we are using docker-compose, we may make silly mistakes. This tool helps you avoid making such mistakes!
 <br />For example:
 ``` yaml
 version: '3'
@@ -17,7 +17,7 @@ services:
         image: redis:4.0.11-alpine
 ```
 This is a docker-compose that works correctly!
-But imagine that you need more services. More services mean that docker-compose should be more complicated! And at this point, human mistakes showing up! I'll add more services, and at this point, I forgot that two of them have the same name, but <b>THEY ARE NOT THE SAME SERVICE!</b>
+But imagine that you need more services. More services means complicated our docker-compose template! And at this point, human mistakes will probably show up! Say, we add more services, and at this point, we forgot that two of them share the same name, but <b>THEY ARE NOT THE SAME SERVICE!</b>
 <br />Simply I'll lose one of my services!
 
 ``` yaml
@@ -41,12 +41,13 @@ services:
         /* Some stuff */    
     
 ```
-
-
+<br />
+<br />
+<br />
 
 
 Another example:
-Imagine you are new to docker-compose
+Imagine you are new to docker-compose, and your template looks like this:
 ``` yaml
 version: '3'
 
@@ -78,6 +79,8 @@ Well this might happened to every newcomer with docker-compose!<br />
 
 ## How to use it
 Just go [HERE](http://160.85.252.231:3000/) and enjoy!
+
+#TODO detail more: put a photo of ur front UI, screenshots  (2) and example of feedback given.
 
 ## How to make it better
 Make sure you have node.JS, npm, yarn, python 3, pip on your machine.
