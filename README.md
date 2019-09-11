@@ -80,7 +80,7 @@ Well this might happened to every newcomer with docker-compose!<br />
 ## How to use it
 Just go [HERE](http://160.85.252.231:3000/) and enjoy!
 
-#TODO detail more: put a photo of ur front UI, screenshots  (2) and example of feedback given.
+
 
 ## How to make it better
 Make sure you have node.JS, npm, yarn, python 3, pip on your machine.
