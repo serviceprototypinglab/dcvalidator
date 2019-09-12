@@ -3,3 +3,4 @@ werkzeug
 flask_cors
 pyYaml
 ruamel.yaml
+python-Levenshtein

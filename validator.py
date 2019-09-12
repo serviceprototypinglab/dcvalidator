@@ -12,11 +12,11 @@ import hashlib
 import json
 import sys
 import yamlreader
+import Levenshtein
 try:
 	import kafka
 except:
 	print("Warning: no kafka support")
-
 
 
 
@@ -172,7 +172,8 @@ class Validator:
 
 		for content in contents:
 			parsed = yamlreader.reader(contents[content])
-			self.__top_level_property_checker__(parsed)
+			if 'Top level property' in labelArray:
+				self.__top_level_property_checker__(parsed)
 			self.__itterator__(parsed)
 			print(content)	
 				
@@ -193,13 +194,14 @@ class Validator:
 				for service in c["services"]:
 					self.__log_writer__("- service:"+ service)
 					numservices += 1
-					if not "container_name" in c["services"][service]:
-						self.__log_writer__("**Warning**  no container name found")
-					elif c["services"][service]["container_name"] in cachecontainername:
-						self.__log_writer__("Duplicate container name: "+ c["services"][service]["container_name"])
-						# raise Exception ('Duplicate container name')
-					else:
-						cachecontainername.append(c["services"][service]["container_name"])
+					if 'Container name' in labelArray:
+						if not "container_name" in c["services"][service]:
+							self.__log_writer__("**Warning**  no container name found")
+						elif c["services"][service]["container_name"] in cachecontainername:
+							self.__log_writer__("Duplicate container name: "+ c["services"][service]["container_name"])
+							# raise Exception ('Duplicate container name')
+						else:
+							cachecontainername.append(c["services"][service]["container_name"])
 					# if "volumes" in c["services"][service]:
 					# 	for volume in c["services"][service]["volumes"]:
 					# 		temp_dir = volume.split(':')
@@ -223,14 +225,16 @@ class Validator:
 										cacheports.append(port_host)
 							if type(port) == type(int()):
 								cacheports.append(port)
-					if not "labels" in c["services"][service]:
-						self.__log_writer__("  ! no labels found")
-						faulty[contentname] = faulty.get(contentname, 0) + 1
-						continue 
-					for labelpair in c["services"][service]["labels"]:
-						self.__log_writer__("  - label:"+ str(labelpair))
-						label, value = labelpair.split("=")
-						alltags[label] = alltags.get(label, 0) + 1
+					if 'Labels' in labelArray:
+						if not "labels" in c["services"][service]:
+							self.__log_writer__("  ! no labels found")
+							faulty[contentname] = faulty.get(contentname, 0) + 1
+							continue 
+						else:
+							for labelpair in c["services"][service]["labels"]:
+								self.__log_writer__("  - label:"+ str(labelpair))
+								label, value = labelpair.split("=")
+								alltags[label] = alltags.get(label, 0) + 1
 					
 
 			elif "apiVersion" in c and "items" in c:
