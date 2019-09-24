@@ -11,6 +11,7 @@ issues = {
     'top-level property': 'CHECK', # version, services, networks, volumes
     'extensions starting with x-': 'TODO', #Version 3.4 or higher
     'Duplicate container name' : 'CHECK',
+    'NETWORK NAME': 'TODO',
     'Duplicate image' : 'CHECK',
     'Duplicate Key in docker compose': 'CHECK',
     'Duplicate port' : 'CHECK',

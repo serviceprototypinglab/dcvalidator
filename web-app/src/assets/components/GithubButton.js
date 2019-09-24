@@ -18,7 +18,7 @@ function GithubButton(props) {
         <>
           <GithubIcon className='githubIcon' />
           <ul className='label'>
-            Github Repository
+            Github File Link
             </ul>
         </>
         <InputBase className='textInput' placeholder={placeholder} value={gitURL} onChange={urlInputChange} onKeyDown={handleKeyDown} />

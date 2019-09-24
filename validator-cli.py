@@ -10,7 +10,8 @@ if __name__ == "__main__":
 		print(" -fl: filebased list; load paths or URLs as lines from a text file")
 		print(" -u: urlbased; direct URL or path specification")
 		print(" -e: eventing; send results to Kafka endpoint with space and series selection")
-		print("Example: {} -a elastest/deploy -e kafka.cloudlab.zhaw.ch/user-1-docker_label_consistency/nightly".format(sys.argv[0]))
+		print(" -fi: filters; you can select filters as any as you want:\n    for more info flag --fih might be helpful!")
+		print("Example: {} -a elastest/deploy -e kafka.cloudlab.zhaw.ch/user-1-docker_label_consistency/nightly -fi 'Duplicate Keys','Typing mistakes'".format(sys.argv[0]))
 		sys.exit(1)
 
 	autosearch = None
@@ -18,6 +19,7 @@ if __name__ == "__main__":
 	filebased = None
 	urlbased = None
 	eventing = None
+	filters = []
 
 	i = 1
 	while i < len(sys.argv):
@@ -29,6 +31,12 @@ if __name__ == "__main__":
 			filebased = sys.argv[i + 1]	
 		elif sys.argv[i] == "-u":
 			urlbased = sys.argv[i + 1]
+		elif sys.argv[i] == "-fi":
+			filters = sys.argv[i + 1]
+			filters = filters.split(',')
+		elif sys.argv[i] == "--fih":
+			print("Whole list of fliters is here!\n \n ====>  'Duplicate Keys','Top level property','Duplicate ports','Container name','Labels','Typing mistakes'\n \n How to use it? \n\n EZ!\n\n Something like this\n\n -fi 'Duplicate Keys,Top level property' \n\n\t *****Warning*****\n\n Makesure that you enter this arg as a string!\n\n\t *****************")
+			sys.exit(1)
 		elif sys.argv[i] == "-e":
 			eventing = sys.argv[i + 1]
 			if not "kafka" in dir():
@@ -38,4 +46,4 @@ if __name__ == "__main__":
 		i += 1
 
 	my_validator = Validator()
-	my_validator.validator(autosearch, filebasedlist, urlbased, eventing, filebased)
+	my_validator.validator(autosearch, filebasedlist, urlbased, eventing, filebased, filters)

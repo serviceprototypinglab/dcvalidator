@@ -1,6 +1,5 @@
 # Checks for inconsistencies in docker-compose labels
 # Dependencies: sudo apt-get install python3-kafka
-# 				pip install ruamel.yaml
 
 import urllib.request
 import yaml
@@ -13,12 +12,13 @@ import json
 import sys
 import yamlreader
 import Levenshtein
+import typoMistake
 try:
 	import kafka
 except:
 	print("Warning: no kafka support")
 
-
+RATIO = 0.5
 
 class Validator:
 
@@ -140,28 +140,57 @@ class Validator:
 			'version': 4,
 			'services': 3,
 			'networks': 2,
-			'volumes': 1
+			'volumes': 2
 		}
 
 		if type(itterable) == type(dict()):
 			temp_itterable = list(itterable)
 			for index in range(1,len(temp_itterable)-1):
 				if priority[temp_itterable[index]] < priority[temp_itterable[index + 1]]:
-					self.__log_writer__('top level property error:'+ str(temp_itterable[index])+ 'should not be before'+ str(temp_itterable[index + 1]))
+					self.__log_writer__('Top level property warning:'+ str(temp_itterable[index])+ 'better not be before'+ str(temp_itterable[index + 1]))
 				if priority[temp_itterable[index - 1]] < priority[temp_itterable[index]]:
-					self.__log_writer__('top level property error:'+ str(temp_itterable[index])+ 'should not be after'+ str(temp_itterable[index - 1]))
+					self.__log_writer__('Top level property warning:'+ str(temp_itterable[index])+ 'better not be after'+ str(temp_itterable[index - 1]))
 		if type(itterable) == type(list()):
 			for index in range(1,len(itterable)-1):
 				if priority[itterable[index][0]] < priority[itterable[index + 1][0]]:
-					self.__log_writer__('top level property error:'+ str(itterable[index][0])+ 'should not be before'+ str(itterable[index + 1][0]))
+					self.__log_writer__('Top level property warning:'+ str(itterable[index][0])+ 'better not be before'+ str(itterable[index + 1][0]))
 				if priority[itterable[index - 1][0]] < priority[itterable[index][0]]:
-					self.__log_writer__('top level property error:'+ str(itterable[index][0])+ 'should not be after'+ str(itterable[index - 1][0]))
+					self.__log_writer__('Top level property warning:'+ str(itterable[index][0])+ 'better not be after'+ str(itterable[index - 1][0]))
 	
 	def __log_writer__(self, text):
 		print(text)
 		f = open("logs.txt", "a+")
 		f.writelines(text + '\n')
 		f.close()
+
+	def __typomistake__(self, parsed, targetTag):
+		tag_list_similarity = {}
+		# err_message = ""
+		for generalTag in parsed:
+			tmp = []
+			for tag in typoMistake.tags[targetTag]:
+				ratio = Levenshtein.ratio(generalTag, tag)
+				if ratio == 1:
+				    break
+				if 1 > ratio >= RATIO:
+				    if [ratio,tag] not in tmp:
+				        tmp.append([ratio,tag])
+			if len(tmp) > 0:
+			    tmp.sort(key=lambda tmp: tmp[0], reverse=True)
+			    tag_list_similarity[generalTag] = tmp
+		for eachTag in tag_list_similarity:
+		    for pair in tag_list_similarity[eachTag]:
+		        if pair[0] < 0.8:
+		            tag_list_similarity[eachTag].remove(pair)
+		return tag_list_similarity
+		# if len(tag_list_similarity) > 0:
+		#     for tag in tag_list_similarity:
+		#         err_message += "I can not find "+str(tag)+", but there is my suggestion: \n"
+		#         for item in tag_list_similarity[tag]:
+		#             for match in item:
+		#                 err_message += str(match[1])
+		# if len(err_message) > 0:
+		#     self.__log_writer__(err_message)
 
 	def __consistencycheck__(self, contents, labelArray):
 		print("checking consistency...")
@@ -186,6 +215,21 @@ class Validator:
 
 
 			c = yaml.load(contents[content])
+
+			if 'Typing mistakes' in labelArray:
+				err_message = ""
+				tag_list_similarity = self.__typomistake__(c, 'general')
+				if len(tag_list_similarity) > 0:
+				    for tag in tag_list_similarity:
+				        err_message += "I can not find '"+str(tag)+"' tag. Maybe you can use: \n"
+				        for item in tag_list_similarity[tag]:
+				            err_message += str(item[1]) + '\n'
+				if len(err_message) > 0:
+					self.__log_writer__("=================== ERROR ===================")
+					self.__log_writer__(err_message)
+					self.__log_writer__("=============================================")
+
+
 
 			if "services" in c:
 				cacheports = []
@@ -235,6 +279,20 @@ class Validator:
 								self.__log_writer__("  - label:"+ str(labelpair))
 								label, value = labelpair.split("=")
 								alltags[label] = alltags.get(label, 0) + 1
+
+
+					if 'Typing mistakes' in labelArray:
+						err_message = ""
+						tag_list_similarity = self.__typomistake__(c["services"][services], 'services')
+						if len(tag_list_similarity) > 0:
+						    for tag in tag_list_similarity:
+						        err_message += "I can not find '"+str(tag)+"' tag under '"+services+"' service. Maybe you can use: \n"
+						        for item in tag_list_similarity[tag]:
+						            err_message += str(item[1]) + '\n'
+						if len(err_message) > 0:
+							self.__log_writer__("=================== ERROR ===================")
+							self.__log_writer__(err_message)
+							self.__log_writer__("=============================================")
 					
 
 			elif "apiVersion" in c and "items" in c:
