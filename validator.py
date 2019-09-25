@@ -236,6 +236,8 @@ class Validator:
 				cachecontainername = []
 				self.__log_writer__("= type: docker-compose")
 				for service in c["services"]:
+					cachedns = []
+					cacheexpose = []
 					self.__log_writer__("- service:"+ service)
 					numservices += 1
 					if 'Container name' in labelArray:
@@ -280,13 +282,61 @@ class Validator:
 								label, value = labelpair.split("=")
 								alltags[label] = alltags.get(label, 0) + 1
 
+					if 'DNS' in labelArray:
+						if "dns" in c["services"][service]:
+							dns = c["services"][service]["dns"]
+							if type(dns) == type(list()):
+								for ip in dns:
+									try:
+										splitedIp = ip.split('.')
+										for section in splitedIp:
+											if len(section) > 3 or len(section) < 1:
+												self.__log_writer__("=================== ERROR ===================")
+												self.__log_writer__("Under service: {}".format(service))
+												self.__log_writer__("The DNS is not appropriate!")
+												self.__log_writer__("=============================================")
+											else:
+												if ip not in cachedns:
+													cachedns.append(ip)
+												else:
+													self.__log_writer__("=================== ERROR ===================")
+													self.__log_writer__("Under service: {}".format(service))
+													self.__log_writer__("Duplicate DNS!")
+													self.__log_writer__("=============================================")
+									except:
+										self.__log_writer__("=================== ERROR ===================")
+										self.__log_writer__("Under service: {}".format(service))
+										self.__log_writer__("The DNS is not appropriate!")
+										self.__log_writer__("=============================================")
+										continue
+									
+							if  type(dns) == type(str()):
+								try:
+									splitedIp = ip.split('.')
+									for section in splitedIp:
+										if len(section) > 3 or len(section) < 1:
+											self.__log_writer__("=================== ERROR ===================")
+											self.__log_writer__("Under service: {}".format(service))
+											self.__log_writer__("The DNS is not appropriate!")
+											self.__log_writer__("=============================================")
+								except:
+									self.__log_writer__("=================== ERROR ===================")
+									self.__log_writer__("Under service: {}".format(service))
+									self.__log_writer__("The DNS is not appropriate!")
+									self.__log_writer__("=============================================")
+							
+							else:
+								self.__log_writer__("=================== ERROR ===================")
+								self.__log_writer__("Under service: {}".format(service))
+								self.__log_writer__("The DNS can be a single value or a list!")
+								self.__log_writer__("=============================================")
 
 					if 'Typing mistakes' in labelArray:
 						err_message = ""
-						tag_list_similarity = self.__typomistake__(c["services"][services], 'services')
+						tag_list_similarity = self.__typomistake__(c["services"][service], 'services')
 						if len(tag_list_similarity) > 0:
 						    for tag in tag_list_similarity:
-						        err_message += "I can not find '"+str(tag)+"' tag under '"+services+"' service. Maybe you can use: \n"
+						        err_message += "I can not find '"+str(tag)+"' tag under '"+service+"' service. Maybe you can use: \n"
 						        for item in tag_list_similarity[tag]:
 						            err_message += str(item[1]) + '\n'
 						if len(err_message) > 0:
@@ -294,6 +344,29 @@ class Validator:
 							self.__log_writer__(err_message)
 							self.__log_writer__("=============================================")
 					
+					if 'Duplicate expose' in labelArray:
+						if 'expose' in c["services"][service]:
+							expose = c["services"][service]['expose']
+							if type(expose) == type(list()):
+								for port in expose:
+									if 1 < port < 65536:
+										if port not in cacheexpose:
+											cacheexpose.append(port)
+										else:
+											self.__log_writer__("=================== ERROR ===================")
+											self.__log_writer__("Under service: {}".format(service))
+											self.__log_writer__("Duplicate port {} exposed!".format(port))
+											self.__log_writer__("=============================================")
+									else:
+										self.__log_writer__("=================== ERROR ===================")
+										self.__log_writer__("Under service: {}".format(service))
+										self.__log_writer__("The port {} that exposed is not appropriate!".format(port))
+										self.__log_writer__("=============================================")
+							else:
+								self.__log_writer__("=================== ERROR ===================")
+								self.__log_writer__("Under service: {}".format(service))
+								self.__log_writer__("Value of expose can be a list!")
+								self.__log_writer__("=============================================")	
 
 			elif "apiVersion" in c and "items" in c:
 				self.__log_writer__("= type: kubernetes")

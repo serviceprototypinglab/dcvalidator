@@ -11,7 +11,7 @@ if __name__ == "__main__":
 		print(" -u: urlbased; direct URL or path specification")
 		print(" -e: eventing; send results to Kafka endpoint with space and series selection")
 		print(" -fi: filters; you can select filters as any as you want:\n    for more info flag --fih might be helpful!")
-		print("Example: {} -a elastest/deploy -e kafka.cloudlab.zhaw.ch/user-1-docker_label_consistency/nightly -fi 'Duplicate Keys','Typing mistakes'".format(sys.argv[0]))
+		print("Example: {} -a elastest/deploy -e kafka.cloudlab.zhaw.ch/user-1-docker_label_consistency/nightly -fi 'Duplicate Keys,Top level property'".format(sys.argv[0]))
 		sys.exit(1)
 
 	autosearch = None
@@ -35,7 +35,7 @@ if __name__ == "__main__":
 			filters = sys.argv[i + 1]
 			filters = filters.split(',')
 		elif sys.argv[i] == "--fih":
-			print("Whole list of fliters is here!\n \n ====>  'Duplicate Keys','Top level property','Duplicate ports','Container name','Labels','Typing mistakes'\n \n How to use it? \n\n EZ!\n\n Something like this\n\n -fi 'Duplicate Keys,Top level property' \n\n\t *****Warning*****\n\n Makesure that you enter this arg as a string!\n\n\t *****************")
+			print("Whole list of fliters is here!\n \n ====>  'Duplicate Keys','Top level property','Duplicate ports','Container name','Labels','Typing mistakes', 'DNS', 'Duplicate expose'\n \n How to use it? \n\n EZ!\n\n Something like this\n\n python validator-cli.py -a elastest/deploy -fi 'Duplicate Keys,Top level property' \n\n\t *****Warning*****\n\n Makesure that you enter this arg as a string!\n\n\t *****************")
 			sys.exit(1)
 		elif sys.argv[i] == "-e":
 			eventing = sys.argv[i + 1]

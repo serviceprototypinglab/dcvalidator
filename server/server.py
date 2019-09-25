@@ -54,7 +54,7 @@ def fileUpload():
 
 @app.route('/getlabels', methods=['GET'])
 def send_labels():
-    labels = ['Duplicate Keys', 'Top level property', 'Duplicate ports', 'Container name', 'Labels', 'Typing mistakes']
+    labels = ['Duplicate Keys', 'Top level property', 'Duplicate ports', 'Container name', 'Labels', 'Typing mistakes', 'DNS', 'Duplicate expose']
     return {'labels' : labels}
 
 @app.route('/analyzing', methods=['POST'])

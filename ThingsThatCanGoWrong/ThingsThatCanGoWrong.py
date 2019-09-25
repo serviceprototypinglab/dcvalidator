@@ -7,7 +7,7 @@
 
 issues = {
     'Duplicate service name' : 'CHECK',
-    'Typing mistake': 'TODO',
+    'Typing mistake': 'CHECK',
     'top-level property': 'CHECK', # version, services, networks, volumes
     'extensions starting with x-': 'TODO', #Version 3.4 or higher
     'Duplicate container name' : 'CHECK',
@@ -15,7 +15,7 @@ issues = {
     'Duplicate image' : 'CHECK',
     'Duplicate Key in docker compose': 'CHECK',
     'Duplicate port' : 'CHECK',
-    'expose' : 'TODO',
+    'expose' : 'CHECK',
     'Invalid volume directory' : 'TODO', # Only for github and CLI.
     'build label and all it needs' : 'TODO', # Including: build, CONTEXT, DOCKERFILE, ARGS, CACHE_FROM, LABELS, SHM_SIZE, TARGET, cap_add, cap_drop, cgroup_parent, command
     # Build path is only for github links and CLI
@@ -37,7 +37,7 @@ issues = {
     'RESTART_POLICY' : 'TODO',
     'UPDATE_CONFIG' : 'TODO',
     'devices' : 'TODO',
-    'dns' : 'TODO',
+    'dns' : 'CHECK',
     'dns_search' : 'TODO',
     'entrypoint' : 'TODO',
     'env_file' : 'TODO', # What's the difrence with environment?
