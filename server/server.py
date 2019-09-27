@@ -86,7 +86,8 @@ def analyzing():
             session['uploadFilePath']=destination
         file_name_list.close()
     print('label_filter:')
-    label_filter = request.form.getlist('labels[]')
+    label_filter = request.form.get('labels[]')
+    label_filter = label_filter.split(',')
     print(label_filter)
     print('URL:')
     reqURL = request.form.get('URL')
@@ -102,9 +103,12 @@ def analyzing():
     my_validator.validator(autosearch=None, filebasedlist=None, urlbased=reqURL, eventing=None, filebased=None, labelArray=label_filter)
     logs = []
     shutil.rmtree("./docker-compose-file")
+    shutil.rmtree("./_cache")
     with open("logs.txt", "r") as logsFile:
+        lineNumber = 0
         for _, line in enumerate(logsFile):
-            logs.append(line)
+            lineNumber += 1
+            logs.append([lineNumber, line])
     os.remove("logs.txt")
     status = 200
     return {'logs': logs}

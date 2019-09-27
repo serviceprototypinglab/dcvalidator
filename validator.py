@@ -18,7 +18,7 @@ try:
 except:
 	print("Warning: no kafka support")
 
-RATIO = 0.5
+RATIO = 0.6
 
 class Validator:
 
@@ -171,17 +171,20 @@ class Validator:
 			for tag in typoMistake.tags[targetTag]:
 				ratio = Levenshtein.ratio(generalTag, tag)
 				if ratio == 1:
-				    break
-				if 1 > ratio >= RATIO:
+					print('({}, {}) = 1'.format(generalTag, tag))
+					break
+				elif 1 > ratio >= RATIO:
 				    if [ratio,tag] not in tmp:
 				        tmp.append([ratio,tag])
 			if len(tmp) > 0:
 			    tmp.sort(key=lambda tmp: tmp[0], reverse=True)
 			    tag_list_similarity[generalTag] = tmp
 		for eachTag in tag_list_similarity:
-		    for pair in tag_list_similarity[eachTag]:
-		        if pair[0] < 0.8:
-		            tag_list_similarity[eachTag].remove(pair)
+			pair = 0
+			while pair < len(tag_list_similarity[eachTag]):
+				if tag_list_similarity[eachTag][pair][0] < 0.8:
+					tag_list_similarity[eachTag].remove(tag_list_similarity[eachTag][pair])
+				pair += 1
 		return tag_list_similarity
 		# if len(tag_list_similarity) > 0:
 		#     for tag in tag_list_similarity:
@@ -220,10 +223,11 @@ class Validator:
 				err_message = ""
 				tag_list_similarity = self.__typomistake__(c, 'general')
 				if len(tag_list_similarity) > 0:
-				    for tag in tag_list_similarity:
-				        err_message += "I can not find '"+str(tag)+"' tag. Maybe you can use: \n"
-				        for item in tag_list_similarity[tag]:
-				            err_message += str(item[1]) + '\n'
+					for tag in tag_list_similarity:
+						if len(tag_list_similarity[tag]) > 0:
+							err_message += "I can not find '"+str(tag)+"' tag. Maybe you can use: \n"
+							for item in tag_list_similarity[tag]:
+							    err_message += str(item[1]) + '\n'
 				if len(err_message) > 0:
 					self.__log_writer__("=================== ERROR ===================")
 					self.__log_writer__(err_message)
@@ -333,12 +337,14 @@ class Validator:
 
 					if 'Typing mistakes' in labelArray:
 						err_message = ""
-						tag_list_similarity = self.__typomistake__(c["services"][service], 'services')
+						tag_list_similarity = self.__typomistake__(c["services"][service], 'service')
+						print(tag_list_similarity)
 						if len(tag_list_similarity) > 0:
-						    for tag in tag_list_similarity:
-						        err_message += "I can not find '"+str(tag)+"' tag under '"+service+"' service. Maybe you can use: \n"
-						        for item in tag_list_similarity[tag]:
-						            err_message += str(item[1]) + '\n'
+							for tag in tag_list_similarity:
+								if len(tag_list_similarity[tag]) > 0:
+									err_message += "I can not find '"+str(tag)+"' tag under '"+service+"' service. Maybe you can use: \n"
+									for item in tag_list_similarity[tag]:
+									    err_message += str(item[1]) + '\t'
 						if len(err_message) > 0:
 							self.__log_writer__("=================== ERROR ===================")
 							self.__log_writer__(err_message)
