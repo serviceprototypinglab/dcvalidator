@@ -171,7 +171,6 @@ class Validator:
 			for tag in typoMistake.tags[targetTag]:
 				ratio = Levenshtein.ratio(generalTag, tag)
 				if ratio == 1:
-					print('({}, {}) = 1'.format(generalTag, tag))
 					break
 				elif 1 > ratio >= RATIO:
 				    if [ratio,tag] not in tmp:
@@ -207,7 +206,6 @@ class Validator:
 			if 'Top level property' in labelArray:
 				self.__top_level_property_checker__(parsed)
 			self.__itterator__(parsed)
-			print(content)	
 				
 				
 			if "https://github.com/" in content:
@@ -236,9 +234,13 @@ class Validator:
 
 
 			if "services" in c:
+				cacheService = []
 				cacheports = []
 				cachecontainername = []
 				self.__log_writer__("= type: docker-compose")
+				for service in c["services"]:
+					cacheService.append(service)
+
 				for service in c["services"]:
 					cachedns = []
 					cacheexpose = []
@@ -338,13 +340,12 @@ class Validator:
 					if 'Typing mistakes' in labelArray:
 						err_message = ""
 						tag_list_similarity = self.__typomistake__(c["services"][service], 'service')
-						print(tag_list_similarity)
 						if len(tag_list_similarity) > 0:
 							for tag in tag_list_similarity:
 								if len(tag_list_similarity[tag]) > 0:
 									err_message += "I can not find '"+str(tag)+"' tag under '"+service+"' service. Maybe you can use: \n"
 									for item in tag_list_similarity[tag]:
-									    err_message += str(item[1]) + '\t'
+									    err_message += str(item[1]) + '\n'
 						if len(err_message) > 0:
 							self.__log_writer__("=================== ERROR ===================")
 							self.__log_writer__(err_message)
@@ -373,6 +374,13 @@ class Validator:
 								self.__log_writer__("Under service: {}".format(service))
 								self.__log_writer__("Value of expose can be a list!")
 								self.__log_writer__("=============================================")	
+					if 'depends_on' in c["services"][service]:
+						for denpendecy in c["services"][service]['depends_on']:
+							if denpendecy not in cacheService:
+								self.__log_writer__("=================== ERROR ===================")
+								self.__log_writer__("Under service: {}".format(service))
+								self.__log_writer__("Wrong dependency! There is no such service with name of {}".format(denpendecy))
+								self.__log_writer__("=============================================")
 
 			elif "apiVersion" in c and "items" in c:
 				self.__log_writer__("= type: kubernetes")

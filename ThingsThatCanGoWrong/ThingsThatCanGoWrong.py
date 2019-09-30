@@ -23,7 +23,7 @@ issues = {
     'other versions of compose' : 'TODO',  # Lastest version can cover older versions, right? :)
     'local use' : 'TODO',
     'good file-based reporting' : 'TODO',
-    'depends_on' : 'TODO',
+    'depends_on' : 'CHECK',
     'credential_spec' : 'TODO',
     'configs' : 'TODO',
     'deploy' : 'TODO', # It's version 3 only
@@ -33,14 +33,13 @@ issues = {
     'PLACEMENT' : 'TODO',
     'REPLICAS' : 'TODO',
     'RESOURCES' : 'TODO',
-    'Out Of Memory Exceptions' : 'UNKNOWN',
     'RESTART_POLICY' : 'TODO',
     'UPDATE_CONFIG' : 'TODO',
     'devices' : 'TODO',
     'dns' : 'CHECK',
     'dns_search' : 'TODO',
     'entrypoint' : 'TODO',
-    'env_file' : 'TODO', # What's the difrence with environment?
+    'env_file' : 'TODO',
     'external_links' : 'TODO',
     'extra_hosts' : 'TODO',
     'healthcheck' : 'TODO',
