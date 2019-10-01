@@ -203,8 +203,8 @@ class Validator:
 
 		for content in contents:
 			parsed = yamlreader.reader(contents[content])
-			if 'Top level property' in labelArray:
-				self.__top_level_property_checker__(parsed)
+			# if 'Top level property' in labelArray:
+			# 	self.__top_level_property_checker__(parsed)
 			self.__itterator__(parsed)
 				
 				
@@ -231,7 +231,10 @@ class Validator:
 					self.__log_writer__(err_message)
 					self.__log_writer__("=============================================")
 
-
+			cachevolumes = []
+			if "volumes" in c:
+				for volume in c["volumes"]:
+					cachevolumes.append(volume)
 
 			if "services" in c:
 				cacheService = []
@@ -254,13 +257,48 @@ class Validator:
 							# raise Exception ('Duplicate container name')
 						else:
 							cachecontainername.append(c["services"][service]["container_name"])
-					# if "volumes" in c["services"][service]:
-					# 	for volume in c["services"][service]["volumes"]:
-					# 		temp_dir = volume.split(':')
-					# 		onhostdir = temp_dir[0]
-					# 		if not os.path.exists(onhostdir):
-					# 			self.__log_writer__ ("Check path "+ str(onhostdir)+ " for volume on service"+ service)
-								# raise Exception ('Path Error')
+					if "volumes" in c["services"][service]:
+						if type(c["services"][service]["volumes"]) == type(list()):
+							for volume in c["services"][service]["volumes"]:
+								if type(volume) == type(""):
+									if ':' in volume:
+										temp_dir = volume.split(':')
+										onhostvolume = temp_dir[0]
+										if not os.path.exists(onhostvolume):
+											if onhostvolume not in cachevolumes:
+												self.__log_writer__("=================== ERROR ===================")
+												self.__log_writer__("Under service: {}".format(service))
+												self.__log_writer__("Check volume "+ str(volume))
+												self.__log_writer__("=============================================")
+								elif type(volume) == type(dict()):
+									if 'Typing mistakes' in labelArray:
+										err_message = ""
+										tag_list_similarity = self.__typomistake__(volume, 'volumes')
+										if len(tag_list_similarity) > 0:
+											for tag in tag_list_similarity:
+												if len(tag_list_similarity[tag]) > 0:
+													err_message += "I can not find '"+str(tag)+"' tag under '"+service+"' service. Maybe you can use: \n"
+													for item in tag_list_similarity[tag]:
+													    err_message += str(item[1]) + '\n'
+										if len(err_message) > 0:
+											self.__log_writer__("=================== ERROR ===================")
+											self.__log_writer__(err_message)
+											self.__log_writer__("=============================================")
+									if 'type' in volume:
+										if volume['type'] not in 'volume bind tmpfs npipe':
+											self.__log_writer__("=================== ERROR ===================")
+											self.__log_writer__("Under service: {}".format(service))
+											self.__log_writer__("Wrong type {} for volume \nVolume types are: volume, bind, tmpfs, npipe".format(volume['type']))
+											self.__log_writer__("=============================================")
+									if 'source' in volume:
+										if not os.path.exists(volume['source']):
+											if volume['source'] not in cachevolumes:
+												self.__log_writer__("=================== ERROR ===================")
+												self.__log_writer__("Under service: {}".format(service))
+												self.__log_writer__("Wrong type {} for volume \nVolume types are: volume, bind, tmpfs, npipe".format(volume['type']))
+												self.__log_writer__("=============================================")
+									
+
 					if "ports" in c["services"][service] and 'Duplicate ports' in labelArray:
 						for port in c["services"][service]["ports"]:
 							if type(port) == type(""):

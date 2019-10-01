@@ -8,7 +8,7 @@
 issues = {
     'Duplicate service name' : 'CHECK',
     'Typing mistake': 'CHECK',
-    'top-level property': 'CHECK', # version, services, networks, volumes
+    # 'top-level property': 'CHECK', # version, services, networks, volumes     It's not important!
     'extensions starting with x-': 'TODO', #Version 3.4 or higher
     'Duplicate container name' : 'CHECK',
     'NETWORK NAME': 'TODO',
@@ -16,7 +16,7 @@ issues = {
     'Duplicate Key in docker compose': 'CHECK',
     'Duplicate port' : 'CHECK',
     'expose' : 'CHECK',
-    'Invalid volume directory' : 'TODO', # Only for github and CLI.
+    'Invalid volume directory' : 'CHECK', # Only for github and CLI. mostly working
     'build label and all it needs' : 'TODO', # Including: build, CONTEXT, DOCKERFILE, ARGS, CACHE_FROM, LABELS, SHM_SIZE, TARGET, cap_add, cap_drop, cgroup_parent, command
     # Build path is only for github links and CLI
     'image lable' : 'TODO',
