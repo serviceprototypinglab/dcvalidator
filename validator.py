@@ -231,10 +231,21 @@ class Validator:
 					self.__log_writer__(err_message)
 					self.__log_writer__("=============================================")
 
-			cachevolumes = []
+			
 			if "volumes" in c:
+				cachevolumes = []
 				for volume in c["volumes"]:
 					cachevolumes.append(volume)
+			if 'configs' in c:
+				cacheconfigs = []
+				for configname in c['configs']:
+					cacheconfigs.append(configname)
+					if 'file' in c['configs'][configname]:
+						if not os.path.exists(c['configs'][configname]['file']):
+							self.__log_writer__("=================== ERROR ===================")
+							self.__log_writer__("Under config {}".format(c['configs'][configname]))
+							self.__log_writer__("Check the file {}".format(c['configs'][configname]['file']))
+							self.__log_writer__("=============================================")
 
 			if "services" in c:
 				cacheService = []
@@ -419,7 +430,75 @@ class Validator:
 								self.__log_writer__("Under service: {}".format(service))
 								self.__log_writer__("Wrong dependency! There is no such service with name of {}".format(denpendecy))
 								self.__log_writer__("=============================================")
-
+					if 'build' in c["services"][service]:
+						build = c["services"][service]['build']
+						if type(build) == type(""):
+							if not os.path.exists(build):
+								self.__log_writer__("=================== ERROR ===================")
+								self.__log_writer__("Under service: {}".format(service))
+								self.__log_writer__("Check build directory "+ str(build))
+								self.__log_writer__("=============================================")
+						elif type(build) == type(dict()):
+							build_path = ""
+							if 'Typing mistakes' in labelArray:
+								err_message = ""
+								tag_list_similarity = self.__typomistake__(build, 'build')
+								if len(tag_list_similarity) > 0:
+									for tag in tag_list_similarity:
+										if len(tag_list_similarity[tag]) > 0:
+											err_message += "I can not find '"+str(tag)+"' tag under '"+service+"' service. Maybe you can use: \n"
+											for item in tag_list_similarity[tag]:
+											    err_message += str(item[1]) + '\n'
+								if len(err_message) > 0:
+									self.__log_writer__("=================== ERROR ===================")
+									self.__log_writer__(err_message)
+									self.__log_writer__("=============================================")
+							if 'context' in build:
+								if os.path.exists(build['context']):
+									build_path = os.path.join(build_path,build['context'])
+								else:
+									self.__log_writer__("=================== ERROR ===================")
+									self.__log_writer__("Under service: {}".format(service))
+									self.__log_writer__("Check build context directory "+ str(build['context']))
+									self.__log_writer__("=============================================")
+							if 'dockerfile' in build:
+								dockerfilepath = os.path.join(build_path,build['dockerfile'])
+								if not os.path.exists(dockerfilepath):
+									self.__log_writer__("=================== ERROR ===================")
+									self.__log_writer__("Under service: {}".format(service))
+									self.__log_writer__("Check build dockerfile "+ str(dockerfilepath))
+									self.__log_writer__("=============================================")
+					if 'configs' in c["services"][service]:
+						configs = c["services"][service]['configs']
+						if type(configs) == type(list()):
+							if type(configs[0]) == type(""):
+								for config in configs:
+									if config not in cacheconfigs:
+										self.__log_writer__("=================== ERROR ===================")
+										self.__log_writer__("Under service: {}".format(service))
+										self.__log_writer__("I can not find config "+ str(config))
+										self.__log_writer__("=============================================")
+							elif type(configs[0]) == type(dict()):
+								for config in configs:
+									if 'Typing mistakes' in labelArray:
+										err_message = ""
+										tag_list_similarity = self.__typomistake__(configs, 'configs')
+										if len(tag_list_similarity) > 0:
+											for tag in tag_list_similarity:
+												if len(tag_list_similarity[tag]) > 0:
+													err_message += "I can not find '"+str(tag)+"' tag under '"+service+"' service. Maybe you can use: \n"
+													for item in tag_list_similarity[tag]:
+													    err_message += str(item[1]) + '\n'
+										if len(err_message) > 0:
+											self.__log_writer__("=================== ERROR ===================")
+											self.__log_writer__(err_message)
+											self.__log_writer__("=============================================")
+									if 'source' in config:
+										if config['source'] not in cacheconfigs:
+											self.__log_writer__("=================== ERROR ===================")
+											self.__log_writer__("Under service: {}".format(service))
+											self.__log_writer__("I can not find 'source' {} in config ".format(str(config)))
+											self.__log_writer__("=============================================")
 			elif "apiVersion" in c and "items" in c:
 				self.__log_writer__("= type: kubernetes")
 				for service in c["items"]:

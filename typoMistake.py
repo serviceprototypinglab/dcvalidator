@@ -66,7 +66,11 @@ tags = {
         ],
     'config':
         [
-
+            'source',
+            'target',
+            'uid',
+            'gid',
+            'mode',
         ],
     'deploy':
         [
