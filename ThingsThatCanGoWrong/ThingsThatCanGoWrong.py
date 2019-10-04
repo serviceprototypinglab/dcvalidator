@@ -17,7 +17,7 @@ issues = {
     'Duplicate port' : 'CHECK',
     'expose' : 'CHECK',
     'Invalid volume directory' : 'CHECK', # Only for github and CLI. mostly working
-    'build label and all it needs' : 'TODO', # Including: build, CONTEXT, DOCKERFILE, ARGS, CACHE_FROM, LABELS, SHM_SIZE, TARGET, cap_add, cap_drop, cgroup_parent, command
+    'build label and all it needs' : 'TODO', # Including: build, CONTEXT, DOCKERFILE, ARGS, CACHE_FROM, LABELS, SHM_SIZE, TARGET
     # Build path is only for github links and CLI
     'image lable' : 'TODO',
     'other versions of compose' : 'TODO',  # Lastest version can cover older versions, right? :)
