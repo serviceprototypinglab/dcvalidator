@@ -102,3 +102,4 @@ Feel free to add some features!
 
 ## Note
 This tool extends the [label consistency checker](https://github.com/serviceprototypinglab/label-consistency) which targets Docker Compose and Kubernetes/OpenShift YAML files.
+It emerged from [research on microservice quality](https://mao-mao-research.github.io/) at Service Prototyping Lab, Zurich University of Applied Sciences.
