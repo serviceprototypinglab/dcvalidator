@@ -13,6 +13,7 @@ import sys
 import yamlreader
 import Levenshtein
 import typoMistake
+from collections import Counter
 try:
 	import kafka
 except:
@@ -200,6 +201,8 @@ class Validator:
 		numservices = 0
 		alltags = {}
 		faulty = {}
+		errors = Counter()
+		warnings = Counter()
 
 		for content in contents:
 			parsed = yamlreader.reader(contents[content])
@@ -215,7 +218,7 @@ class Validator:
 			faulty[contentname] = 0.0
 
 
-			c = yaml.load(contents[content])
+			c = yaml.load(contents[content], Loader=yaml.FullLoader)
 
 			if 'Typing mistakes' in labelArray:
 				err_message = ""
@@ -263,9 +266,11 @@ class Validator:
 					if 'Container name' in labelArray:
 						if not "container_name" in c["services"][service]:
 							self.__log_writer__("**Warning**  no container name found")
+							warnings['container_name_missing'] += 1
 						elif c["services"][service]["container_name"] in cachecontainername:
 							self.__log_writer__("Duplicate container name: "+ c["services"][service]["container_name"])
 							# raise Exception ('Duplicate container name')
+							warnings['container_name_duplicate'] += 1
 						else:
 							cachecontainername.append(c["services"][service]["container_name"])
 					if "volumes" in c["services"][service]:
@@ -301,6 +306,8 @@ class Validator:
 											self.__log_writer__("Under service: {}".format(service))
 											self.__log_writer__("Wrong type {} for volume \nVolume types are: volume, bind, tmpfs, npipe".format(volume['type']))
 											self.__log_writer__("=============================================")
+											errors['volume_type'] =+ 1
+											faulty[contentname] = faulty.get(contentname, 0) + 1
 									if 'source' in volume:
 										if not os.path.exists(volume['source']):
 											if volume['source'] not in cachevolumes:
@@ -322,6 +329,7 @@ class Validator:
 									if port_host in cacheports:
 										self.__log_writer__("Duplicate ports in service "+service+ " port "+ str(port_host))
 										# raise Exception ('Duplicate ports')
+										warnings['duplicate_ports'] += 1
 									else:
 										cacheports.append(port_host)
 							if type(port) == type(int()):
@@ -350,35 +358,43 @@ class Validator:
 												self.__log_writer__("Under service: {}".format(service))
 												self.__log_writer__("The DNS is not appropriate!")
 												self.__log_writer__("=============================================")
-											else:
-												if ip not in cachedns:
-													cachedns.append(ip)
-												else:
-													self.__log_writer__("=================== ERROR ===================")
-													self.__log_writer__("Under service: {}".format(service))
-													self.__log_writer__("Duplicate DNS!")
-													self.__log_writer__("=============================================")
+												errors['dns_malformed'] += 1
+												faulty[contentname] = faulty.get(contentname, 0) + 1
+										if ip not in cachedns:
+											cachedns.append(ip)
+										else:
+											self.__log_writer__("=================== ERROR ===================")
+											self.__log_writer__("Under service: {}".format(service))
+											self.__log_writer__("Duplicate DNS!")
+											self.__log_writer__("=============================================")
+											errors['dns_duplicate'] += 1
+											faulty[contentname] = faulty.get(contentname, 0) + 1
 									except:
 										self.__log_writer__("=================== ERROR ===================")
 										self.__log_writer__("Under service: {}".format(service))
 										self.__log_writer__("The DNS is not appropriate!")
 										self.__log_writer__("=============================================")
+										errors['dns_malformed'] += 1
+										faulty[contentname] = faulty.get(contentname, 0) + 1
 										continue
 									
-							if  type(dns) == type(str()):
+							elif  type(dns) == type(str()):
 								try:
-									splitedIp = ip.split('.')
-									for section in splitedIp:
-										if len(section) > 3 or len(section) < 1:
-											self.__log_writer__("=================== ERROR ===================")
-											self.__log_writer__("Under service: {}".format(service))
-											self.__log_writer__("The DNS is not appropriate!")
-											self.__log_writer__("=============================================")
+									splitedIp = dns.split('.')
+									if len(splitedIp) > 3 or len(splitedIp) < 1:
+										self.__log_writer__("=================== ERROR ===================")
+										self.__log_writer__("Under service: {}".format(service))
+										self.__log_writer__("The DNS is not appropriate!")
+										self.__log_writer__("=============================================")
+										errors['dns_malformed'] += 1
+										faulty[contentname] = faulty.get(contentname, 0) + 1
 								except:
 									self.__log_writer__("=================== ERROR ===================")
 									self.__log_writer__("Under service: {}".format(service))
 									self.__log_writer__("The DNS is not appropriate!")
 									self.__log_writer__("=============================================")
+									errors['dns_malformed'] += 1
+									faulty[contentname] = faulty.get(contentname, 0) + 1
 							
 							else:
 								self.__log_writer__("=================== ERROR ===================")
@@ -405,6 +421,7 @@ class Validator:
 							expose = c["services"][service]['expose']
 							if type(expose) == type(list()):
 								for port in expose:
+									port = int(port)
 									if 1 < port < 65536:
 										if port not in cacheexpose:
 											cacheexpose.append(port)
@@ -413,16 +430,23 @@ class Validator:
 											self.__log_writer__("Under service: {}".format(service))
 											self.__log_writer__("Duplicate port {} exposed!".format(port))
 											self.__log_writer__("=============================================")
+											errors['expose_port_duplicate'] += 1
+											faulty[contentname] = faulty.get(contentname, 0) + 1
 									else:
 										self.__log_writer__("=================== ERROR ===================")
 										self.__log_writer__("Under service: {}".format(service))
 										self.__log_writer__("The port {} that exposed is not appropriate!".format(port))
 										self.__log_writer__("=============================================")
+										errors['expose_port_malformed'] += 1
+										faulty[contentname] = faulty.get(contentname, 0) + 1
 							else:
 								self.__log_writer__("=================== ERROR ===================")
 								self.__log_writer__("Under service: {}".format(service))
 								self.__log_writer__("Value of expose can be a list!")
-								self.__log_writer__("=============================================")	
+								self.__log_writer__("=============================================")
+								errors['expose_syntax'] += 1
+								faulty[contentname] = faulty.get(contentname, 0) + 1
+
 					if 'depends_on' in c["services"][service]:
 						for denpendecy in c["services"][service]['depends_on']:
 							if denpendecy not in cacheService:
@@ -430,6 +454,8 @@ class Validator:
 								self.__log_writer__("Under service: {}".format(service))
 								self.__log_writer__("Wrong dependency! There is no such service with name of {}".format(denpendecy))
 								self.__log_writer__("=============================================")
+								errors['dependency_missing'] += 1
+								faulty[contentname] = faulty.get(contentname, 0) + 1
 					if 'build' in c["services"][service]:
 						build = c["services"][service]['build']
 						if type(build) == type(""):
@@ -518,7 +544,7 @@ class Validator:
 				faulty[contentname] = faulty.get(contentname, 0) + 1
 				continue
 
-		return numservices, alltags, faulty
+		return numservices, alltags, faulty, errors, warnings
 
 	def __sendmessage__(self, host, label, series, message):
 		if kafka.__version__.startswith("0"):
@@ -548,11 +574,13 @@ class Validator:
 				time.sleep(t)
 				t *= 2
 
-	def validator(self, autosearch, filebasedlist, urlbased, eventing, filebased=None, labelArray=[]):
+	def validator(self, autosearch, filebasedlist, urlbased, eventing, filebased=None, labelArray=[], jsonpath= None):
 		composefiles = []
 
 		d_start = time.time()
-		cachefiles = self.__loadcache__()
+		# TODO enable cache again
+		# cachefiles = self.__loadcache__()
+		cachefiles = []
 
 		if filebasedlist:
 			f = open(filebasedlist)
@@ -571,7 +599,7 @@ class Validator:
 		
 		contents = self.__loading__(cachefiles, composefiles)
 		
-		numservices, alltags, faulty = self.__consistencycheck__(contents, labelArray)
+		numservices, alltags, faulty, error_types, warnings = self.__consistencycheck__(contents, labelArray)
 		d_end = time.time()
 
 		self.__log_writer__("services: {}".format(numservices))
@@ -583,6 +611,8 @@ class Validator:
 		d = {}
 		d["agent"] = "sentinel-generic-agent"
 		d["services"] = float(numservices)
+		d["errors"] = error_types
+		d["warnings"] = warnings
 		for label in alltags:
 			d[label] = float(alltags[label])
 		d.update(faulty)
@@ -590,5 +620,8 @@ class Validator:
 			kafka, space, series = eventing.split("/")
 			print("sending message... {}".format(d))
 			self.__sendmessage__(kafka, space, series, json.dumps(d))
+		elif jsonpath != None:
+			with open(jsonpath, 'w') as outfile:
+				json.dump(d, outfile)
 		else:
-			print("not sending message... {}".format(d))
+			print("not sending message... {}".format(json.dumps(d)))
