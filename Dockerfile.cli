@@ -1,0 +1,13 @@
+FROM python:3.9-slim-buster
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/src/app
+
+COPY requirements.txt validator-cli.py validator.py yamlreader.py typoMistake.py ./
+
+RUN pip install --no-cache-dir -r requirements.txt 
+
+CMD [ "/bin/bash", "-c", "python ./validator-cli.py -f docker-compose.yaml -fi 'Duplicate Keys,Top level property,Duplicate ports,Container name,Typing mistakes,DNS,Duplicate expose' -o ./data/output_$(date +%Y-%m-%d).json"]
