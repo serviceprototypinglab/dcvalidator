@@ -11,6 +11,7 @@ if __name__ == "__main__":
 		print(" -u: urlbased; direct URL or path specification")
 		print(" -e: eventing; send results to Kafka endpoint with space and series selection")
 		print(" -fi: filters; you can select filters as any as you want:\n    for more info flag --fih might be helpful!")
+		print(" -o: JSON output path; path to with result JSON will be written")
 		print("Example: {} -a elastest/deploy -e kafka.cloudlab.zhaw.ch/user-1-docker_label_consistency/nightly -fi 'Duplicate Keys,Top level property'".format(sys.argv[0]))
 		sys.exit(1)
 
@@ -20,6 +21,7 @@ if __name__ == "__main__":
 	urlbased = None
 	eventing = None
 	filters = []
+	jsonpath = None
 
 	i = 1
 	while i < len(sys.argv):
@@ -34,6 +36,8 @@ if __name__ == "__main__":
 		elif sys.argv[i] == "-fi":
 			filters = sys.argv[i + 1]
 			filters = filters.split(',')
+		elif sys.argv[i] == "-o":
+			jsonpath = sys.argv[i + 1]
 		elif sys.argv[i] == "--fih":
 			print("Whole list of fliters is here!\n \n ====>  'Duplicate Keys','Top level property','Duplicate ports','Container name','Labels','Typing mistakes', 'DNS', 'Duplicate expose'\n \n How to use it? \n\n EZ!\n\n Something like this\n\n python validator-cli.py -a elastest/deploy -fi 'Duplicate Keys,Top level property' \n\n\t *****Warning*****\n\n Makesure that you enter this arg as a string!\n\n\t *****************")
 			sys.exit(1)
@@ -46,4 +50,4 @@ if __name__ == "__main__":
 		i += 1
 
 	my_validator = Validator()
-	my_validator.validator(autosearch, filebasedlist, urlbased, eventing, filebased, filters)
+	my_validator.validator(autosearch, filebasedlist, urlbased, eventing, filebased, filters, jsonpath)

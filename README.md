@@ -100,6 +100,13 @@ You are ready to go!
 <b>YES!</b> <br />
 Feel free to add some features!
 
+## CLI Container
+The CLI of the Docker Compose Validator has been packaged as Docker container and can be built via the following command:
+
+```
+docker build -t <registry>/<container-name> -f Dockerfile.cli .
+```
+
 ## Note
 This tool extends the [label consistency checker](https://github.com/serviceprototypinglab/label-consistency) which targets Docker Compose and Kubernetes/OpenShift YAML files.
 It emerged from [research on microservice quality](https://mao-mao-research.github.io/) at Service Prototyping Lab, Zurich University of Applied Sciences.
